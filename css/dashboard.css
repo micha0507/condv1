@@ -16,7 +16,7 @@ body {
 }
 
 .navegacion {
-    position: fixed;
+    position: relative;
     width: 20%;
     height: 100%;
     display: flex;
@@ -120,7 +120,6 @@ body {
     align-items: center;
     justify-content: center;
     overflow-y: auto; /* Permitir el desplazamiento vertical */
-    background-color: #f44336;
     padding: 20px; /* Añadir padding para el contenido */
 }
 

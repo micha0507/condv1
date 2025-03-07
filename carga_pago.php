@@ -14,9 +14,9 @@ include './modelo/conexion.php';
 
 <body>
     <!-- barra de navegación -->
-     <nav class="navegacion">
+    
      <?php include 'navbar.php'; ?>
-     </nav>
+     
     
     <!-- PRINCIPAL -->
     <section class="principal">

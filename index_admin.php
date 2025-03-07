@@ -1,12 +1,3 @@
-<?php
-
-session_start();
-if(empty($_SESSION["id_admin"])){
-	header("location: login.php");
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,9 +9,10 @@ if(empty($_SESSION["id_admin"])){
 </head>
 <body>
 <! -- Aquí va el código de la página principal del panel de administrador -->
-
-    <?php include 'navbar.php'; ?>
     
+        <?php include 'navbar.php'; ?>;
+     
+
 
     <! -- pantalla principal -->
     <div class="principal">
