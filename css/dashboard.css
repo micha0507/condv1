@@ -125,11 +125,12 @@ body {
 
 
 /* TÍTULO ESTADÍSTICAS */
+
 .titulo {
     display: flex;
     justify-content: flex-start;
     width: 100%;
-    margin-top: 90px;
+    margin-top: 50px;
     margin-left: 140px;
     margin-bottom: 40px;
 }
