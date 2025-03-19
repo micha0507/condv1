@@ -30,7 +30,7 @@
         <! -- botones menu nav -->
         <div class="menu_nav">
             <ul class="botones_menu">
-                <li class="boton_menu"><img src="./img/icon/logo_estadistica.png"><a href="./index_admin.php">Estadísticas<a></li>
+                <li class="boton_menu"><img src="./img/icon/logo_estadistica.png"><a href="index_admin.php">Estadísticas<a></li>
                 <li class="boton_menu"><img src="./img/icon/masivo_icon.png"><a href="">Carga masiva</a></li>
                 <li class="boton_menu"><img src="./img/icon/eventuales_icon.png"><a href="">Gastos eventuales</a></li>
                 <li class="boton_menu"><img src="./img/icon/recurrentes_icon.png"><a href="">Gastos recurrentes</a></li>
