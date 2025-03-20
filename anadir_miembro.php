@@ -21,7 +21,9 @@ include './modelo/conexion.php';
         <?php
         $rif = $nombre = $apellido = $usuario = $pass = $email_propietario = "";
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $tipo_rif = $_POST['tipo_rif'];
             $rif = $_POST['rif'];
+            $rif = $tipo_rif . $rif; // Concatenar tipo_rif con rif
             $nombre = $_POST['nombre'];
             $apellido = $_POST['apellido'];
             $usuario = $_POST['usuario'];
@@ -29,9 +31,9 @@ include './modelo/conexion.php';
             $email_propietario = $_POST['email_propietario'];
 
             // Validaciones
-            if (!preg_match("/^[a-zA-Z]+$/", $nombre)) {
-            echo "El nombre solo debe contener letras.";
-            } elseif (!preg_match("/^[a-zA-Z]+$/", $apellido)) {
+            if (!preg_match("/^[a-zA-Z\s]+$/", trim($nombre))) {
+            echo "El nombre solo debe contener letras";
+            } elseif (!preg_match("/^[a-zA-Z\s]+$/", trim($apellido))) {
             echo "El apellido solo debe contener letras.";
             } elseif (strlen($pass) < 8 || strlen($pass) > 12) {
             echo "La contraseña debe tener entre 8 y 12 caracteres.";
@@ -53,7 +55,7 @@ include './modelo/conexion.php';
                 $stmt->bind_param("ssssss", $rif, $nombre, $apellido, $usuario, $pass, $email_propietario);
 
                 if ($stmt->execute()) {
-                echo "Nuevo miembro añadido exitosamente." ;
+                echo "Nuevo miembro añadido exitosamente.";
                 // Limpiar los campos del formulario
                 $rif = $nombre = $apellido = $usuario = $pass = $email_propietario = "";
                 } else {
@@ -65,29 +67,37 @@ include './modelo/conexion.php';
 
             $stmt_check->close();
             $conexion->close();
-            }
-        }
+            } }
         ?>
 
         <div class="carga_pago">
             <form id="anadirMiembroForm" method="post">
                 <label for="rif">RIF:</label>
-                <input type="text" id="rif" name="rif" value="<?php echo htmlspecialchars($rif); ?>" required><br>
+                <div>
+                <select id="tipo_rif" name="tipo_rif" required>
+                        <option value="V">V</option>
+                        <option value="J">J</option>
+                        <option value="G">G</option>
+                        <option value="E">E</option>
+                        <option value="C">C</option>
+                    </select>
+                    <input type="text" id="rif" placeholder="Ejemplo: 12345678" name="rif" value="<?php echo htmlspecialchars($rif); ?>" required><br>
+     
+                    </div>
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($nombre); ?>" required><br>
+                <input type="text" id="nombre" name="nombre" placeholder="Ejemplo: Juan" value="<?php echo htmlspecialchars($nombre); ?>" required><br>
                 
                 <label for="apellido">Apellido:</label>
-                <input type="text" id="apellido" name="apellido" value="<?php echo htmlspecialchars($apellido); ?>" required><br>
+                <input type="text" id="apellido" name="apellido" placeholder="Ejemplo: Pérez" value="<?php echo htmlspecialchars($apellido); ?>" required><br>
                 
                 <label for="usuario">Usuario:</label>
-                <input type="text" id="usuario" name="usuario" value="<?php echo htmlspecialchars($usuario); ?>" required><br>
+                <input type="text" id="usuario" name="usuario" placeholder="Ejemplo: juanperez123" value="<?php echo htmlspecialchars($usuario); ?>" required><br>
                 
                 <label for="pass">Contraseña:</label>
-                <input type="password" id="pass" name="pass" value="<?php echo htmlspecialchars($pass); ?>" required><br>
+                <input type="password" id="pass" name="pass" placeholder="Entre 8 y 12 caracteres" value="<?php echo htmlspecialchars($pass); ?>" required><br>
                 
                 <label for="email_propietario">Email:</label>
-                <input type="email" id="email_propietario" name="email_propietario" value="<?php echo htmlspecialchars($email_propietario); ?>" required><br>
-                
+                <input type="email" id="email_propietario" name="email_propietario" placeholder="Ejemplo: juan.perez@email.com" value="<?php echo htmlspecialchars($email_propietario); ?>" required><br>
                 <button type="submit">Añadir Miembro</button>
             </form>
         </div>

@@ -54,40 +54,48 @@ include './modelo/conexion.php';
             <div class="carga_pago">
                 <label for="residencia">Residencia:</label>
                 <select id="residencia" name="residencia" required disabled>
-            <option value="">Busque un propietario antes de seleccionar una residencia</option>
-        </select>
+                    <option value="">Busque un propietario antes de seleccionar una residencia</option>
+                </select>
 
-        <?php
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['rif_cedula'])) {
-                if (isset($row['id'])) {
-                    $propietario_id = $row['id'];
-                    $query_residencias = "SELECT r.nro AS numero_residencia FROM residencias r WHERE r.id_propietario = $propietario_id";
-                    $result_residencias = $conexion->query($query_residencias);
-                    
-                    if ($result_residencias && $result_residencias->num_rows > 0) {
-                        echo "<script>";
-                        echo "document.getElementById('residencia').innerHTML = '';";
-                        echo "document.getElementById('residencia').disabled = false;";
-                        while ($residencia = $result_residencias->fetch_assoc()) {
-                            echo "document.getElementById('residencia').innerHTML += '<option value=\"" . htmlspecialchars($residencia['numero_residencia']) . "\">" . htmlspecialchars($residencia['numero_residencia']) . "</option>';";
+                <?php
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['rif_cedula'])) {
+                    if (isset($row['id'])) {
+                        $propietario_id = $row['id'];
+                        $query_residencias = "SELECT r.id AS residencia_id, r.nro AS numero_residencia FROM residencias r WHERE r.id_propietario = $propietario_id";
+                        $result_residencias = $conexion->query($query_residencias);
+
+                        if ($result_residencias && $result_residencias->num_rows > 0) {
+                            echo "<script>";
+                            echo "document.getElementById('residencia').innerHTML = '<option value=\"\">Seleccione una residencia</option>';"; 
+                            echo "document.getElementById('residencia').disabled = false;";
+                            while ($residencia = $result_residencias->fetch_assoc()) {
+                                echo "document.getElementById('residencia').innerHTML += '<option value=\"" . htmlspecialchars($residencia['residencia_id']) . "\">" . htmlspecialchars($residencia['numero_residencia']) . "</option>';";
+                            }
+                            echo "</script>";
+                        } else {
+                            echo "<script>";
+                            echo "document.getElementById('residencia').innerHTML = '<option value=\"\">No se encontraron residencias asociadas a este propietario</option>';";
+                            echo "document.getElementById('residencia').disabled = true;";
+                            echo "</script>";
                         }
-                        echo "</script>";
-                    } else {
-                        echo "<script>";
-                        echo "document.getElementById('residencia').innerHTML = '<option value=\"\">No se encontraron residencias asociadas a este propietario</option>';";
-                        echo "document.getElementById('residencia').disabled = true;";
-                        echo "</script>";
                     }
+                } else {
+                    echo "<script>";
+                    echo "document.getElementById('residencia').innerHTML = '<option value=\"\">Busque un propietario antes de seleccionar una residencia</option>';";
+                    echo "document.getElementById('residencia').disabled = true;";
+                    echo "</script>";
                 }
-            }
-            ?>
-                </script>
+                ?>
             </div>
-            
-            <!-- SECCION PAGO -->
+
+        <!-- SECCION PAGO -->
         <div class="carga_pago">
             <form method="POST" action="./modelo/procesar_pago.php">
-                <input type="hidden" id="propietario_id" name="propietario_id" value="<?php echo $propietario_id; ?>">
+                <input type="hidden" id="propietario_id" name="propietario_id" value="<?php echo isset($propietario_id) ? $propietario_id : ''; ?>">
+                
+                <label for="residencia_id">ID de Residencia:</label>
+                <input type="text" id="residencia_id" name="residencia_id" readonly>
+
                 <label for="fecha">Fecha del Pago:</label>
                 <input type="date" id="fecha" name="fecha" required>
                 
@@ -96,16 +104,23 @@ include './modelo/conexion.php';
                     <option value="Pendiente">Pendiente</option>
                     <option value="Validado">Validado</option>
                 </select>
-                
+
                 <label for="monto">Monto:</label>
                 <input type="number" id="monto" name="monto" step="0.01" required>
-                
+
                 <label for="referencia">Referencia:</label>
                 <input type="text" id="referencia" name="referencia" required>
-                
+
                 <button type="submit">Registrar Pago</button>
             </form>
         </div>
+
+        <script>
+            document.getElementById('residencia').addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                document.getElementById('residencia_id').value = selectedOption.value;
+            });
+        </script>
 
     </section>
         </section>
