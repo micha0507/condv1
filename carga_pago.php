@@ -22,7 +22,7 @@ include './modelo/conexion.php';
     <section class="principal">
         <h1>Carga del Pago:</h1>
         <!-- SECCION BUSQUEDA DE Propietario -->
-        <section id="buscarPropietarioForm">  <section >
+        <section id="buscarPropietarioForm">  
                 <form method="POST" id="searchForm">
                     <label for="rif_cedula">RIF/Cédula del Propietario:</label>
                     <input type="text" id="rif_cedula" name="rif_cedula" required>
@@ -46,7 +46,7 @@ include './modelo/conexion.php';
                     }
                 }
                 ?>
-            </section>
+            
             </section> 
 
         <!-- FORMULARIO -->

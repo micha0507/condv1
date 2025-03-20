@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   VALUES ($propietario_id, '$fecha', '$status', $monto, '$referencia')";
 
         if ($conexion->query($query) === TRUE) {
-            header("Location: ../pago_registrado.html");
+            header("Location: ../pago_registrado.php");
             exit();
         } else {
             echo "Error al registrar el pago: " . $conexion->error;
