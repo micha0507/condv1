@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/navbar.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add" />
+
     <title>Document</title>
 </head>
 <body>
@@ -33,6 +34,7 @@
                 <li class="boton_menu"><img src="./img/icon/recurrentes_icon.png"><a href="">Gastos recurrentes</a></li>
                 <li class="boton_menu"><img src="./img/icon/nomina_icon.png"><a href="">Nómina</a></a>
                 <li class="boton_menu"><img src="./img/icon/miembros_icon.png"><a href="./anadir_miembro.php">Añadir miembro</a></li>
+                <li class="boton_menu"><img src="./img/icon/edit.png"><a href="./editor.php">Publicaciones</a></li>
 
             </ul>    
         

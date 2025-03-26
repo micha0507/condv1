@@ -1,8 +1,8 @@
 <?php
-// Include the database connection
+// Incluye la conexion
 include 'conexion.php';
 
-// Query to get the last three payments
+// Para obtener ultimos pagos
 $query = "
     SELECT
         pagos.id AS pago_id,
@@ -24,15 +24,15 @@ $query = "
     LIMIT 3
 ";
 
-// Execute the query
+// Ejecutar el script
 $result = $conexion->query($query);
 
 // Check if there are results
 if ($result->num_rows > 0) {
-    // Start the table
+    // Incicia la tabla
     echo "<div class='marcos_panel'>
         <table>
-            <tr>
+            <tr class='titulo_tabla'>
                 <th>No.</th>
                 <th>Fecha</th>
                 <th>Status</th>
@@ -50,7 +50,16 @@ if ($result->num_rows > 0) {
         echo "<tr>
                 <td>{$row['pago_id']}</td>
                 <td>{$row['fecha']}</td>
-                <td>{$row['status']}</td>
+                <td style='background-color: " . ($row['status'] == "Pendiente" ? "#fffbd2;color:#e8ab54;" : "#c3fcc8;color:green;") . "border-radius: 6px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                margin-left: 0px;
+                font-size: 12px;
+                font-style: bold;
+                font-weight: bold;
+                display: flex;
+                justify-content: center;
+                align-items: center;'>{$row['status']}</td>
                 <td>{$row['nro']}</td>
                 <td>{$row['nombre']}</td>
                 <td>{$row['apellido']}</td>

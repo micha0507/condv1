@@ -93,8 +93,8 @@ include './modelo/conexion.php';
             <form method="POST" action="./modelo/procesar_pago.php">
                 <input type="hidden" id="propietario_id" name="propietario_id" value="<?php echo isset($propietario_id) ? $propietario_id : ''; ?>">
                 
-                <label for="residencia_id">ID de Residencia:</label>
-                <input type="text" id="residencia_id" name="residencia_id" readonly>
+              
+                <input type="hidden" id="residencia_id" name="residencia_id" readonly>
 
                 <label for="fecha">Fecha del Pago:</label>
                 <input type="date" id="fecha" name="fecha" required>

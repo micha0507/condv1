@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verificar que todos los campos requeridos estén completos
     if ($fecha_registro && $status && $nro_residencia && $id_propietario && $monto && $referencia) {
         // Preparar la consulta SQL para insertar los datos en la tabla pagos
-        $query = "INSERT INTO pagos (fecha_registro, status, nro_residencia, id_propietario, monto, referencia) 
+        $query = "INSERT INTO pagos (fecha, status, nro_residencia, id_propietario, monto, referencia) 
                   VALUES ('$fecha_registro', '$status', '$nro_residencia', '$id_propietario', '$monto', '$referencia')";
 
         // Ejecutar la consulta
