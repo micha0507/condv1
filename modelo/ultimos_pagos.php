@@ -75,5 +75,3 @@ if ($result->num_rows > 0) {
 }
 
 // Close the connection
-$conexion->close();
-?>

@@ -225,7 +225,7 @@ body {
     padding: 0; /* Eliminamos el padding para que la tabla ocupe todo el ancho */
     text-align: center;
     border: 1px solid #ccc;
-    
+    height: 200px;
     border-radius: 5px;
     display: flex;
     flex: 1;
@@ -272,4 +272,40 @@ body {
 .marcos_panel th {
     font-weight: bold;
     background-color: rgb(241, 241, 241); /* Color de fondo de la cabecera */
+}
+
+#publicaciones {
+    color: rgb(0, 0, 0);
+    padding: 20px;
+    
+    border: 1px solid #ccc;
+    
+    border-radius: 5px;
+    height: 300px;
+    flex: 1;
+    text-decoration: none;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    overflow: scroll;
+}
+
+
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
+    min-height: 300px; /
+}
+
+.ck.ck-editor__main > .ck-editor__editable.ck-focused {
+    min-height: 400px; }
+
+.boton_publicacion {
+    width: 60%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }

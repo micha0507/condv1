@@ -1,3 +1,7 @@
+<?php
+include './modelo/conexion.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +49,7 @@
             
         
         <! -- PANEL DE DE ADMINISTRACION  -->
-        <section class="panel">
+        <di class="panel">
             
             <div class="first_row">
                 <! -- PANEL PAGOS VENCIDOS  -->
@@ -57,9 +61,36 @@
                     </div>
                 </div>
                 </a> 
+            
                 <! -- PANEL ULTIMOS PAGOS TABLA  -->
-            <?php include 'modelo/ultimos_pagos.php'; ?>
+                <?php include 'modelo/ultimos_pagos.php'; ?>
+            </div> </div>
+
+
+            <div id="publicaciones">            
+               <h2>Publicaciones:</h2>
+            <?php
+
+
+                    // Consulta para obtener el último registro de la tabla 'post'
+                    $sql = "SELECT contenido FROM post ORDER BY id_post DESC LIMIT 1";
+                    $resultado = $conexion->query($sql);
+
+                    // Verificamos si hay resultados
+                    if ($resultado->num_rows > 0) {
+                        // Obtenemos el contenido del último registro
+                        $fila = $resultado->fetch_assoc();
+                        echo $fila['contenido'];
+                    } else {
+                        echo "No hay registros en la tabla 'post'.";
+                    }
+0.
+                    // Cerramos la conexión
+
+                        ?>           
+            </div>
         </section>
+
     </div>
 </body>
 </html>
