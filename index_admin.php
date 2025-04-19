@@ -21,6 +21,8 @@ include './modelo/conexion.php';
     <! -- pantalla principal -->
     <div class="principal">
 
+              
+                
     <! -- ENCABEZADO PRINCIPAL -->
         <div class="encabezado_principal"></div>
     <! -- BARRA DE BUSQUEDA Y TITULO -->
@@ -35,6 +37,7 @@ include './modelo/conexion.php';
                     <div class="botones_filtro">
                     <input type="radio" class="radios" name="filtro" id="nombre" value="nombre" >
                     <label for="nombre" class="radios">Nombre</label>
+                   
                     <input type="radio" class="radios" name="filtro" id="nro_casa" value="nro_casa" >
                     <label class="radios" for="nombre">Nro. de Apto./Casa</label>
                     </div>
@@ -56,7 +59,20 @@ include './modelo/conexion.php';
                 <a href="">
                 <div class="marcos_panel">
                     <div class="para_morosos">
-                        <h1 class="numeros_morosos">18</h4>
+                        <?php
+                        // Consulta para contar los registros con status "Pendiente"
+                        $sql_morosos = "SELECT COUNT(*) AS total_pendientes FROM facturas WHERE status = 'Pendiente'";
+                        $resultado_morosos = $conexion->query($sql_morosos);
+
+                        // Verificamos si hay resultados
+                        if ($resultado_morosos->num_rows > 0) {
+                            $fila_morosos = $resultado_morosos->fetch_assoc();
+                            $total_pendientes = $fila_morosos['total_pendientes'];
+                        } else {
+                            $total_pendientes = 0;
+                        }
+                        ?>
+                        <h1 class="numeros_morosos"><?php echo $total_pendientes; ?></h1>
                         <p>Pagos vencidos</p>
                     </div>
                 </div>
@@ -64,9 +80,7 @@ include './modelo/conexion.php';
             
                 <! -- PANEL ULTIMOS PAGOS TABLA  -->
                 <?php include 'modelo/ultimos_pagos.php'; ?>
-            </div> </div>
-
-
+            </div> 
             <div id="publicaciones">            
                <h2>Publicaciones:</h2>
             <?php
@@ -84,10 +98,33 @@ include './modelo/conexion.php';
                     } else {
                         echo "No hay registros en la tabla 'post'.";
                     }
-0.
-                    // Cerramos la conexión
 
-                        ?>           
+                        ?>
+                 
+            </div>
+            <?php
+                // Consulta para obtener el último registro de la tabla 'factor'
+                $sql = "SELECT factor, fecha FROM factor ORDER BY id DESC LIMIT 1";
+                $resultado = $conexion->query($sql);
+
+                if ($resultado && $resultado->num_rows > 0) {
+                    $fila = $resultado->fetch_assoc();
+                    $ultimo_factor = $fila['factor'];
+                    $ultima_fecha = $fila['fecha'];
+
+                    echo "<p>Factor: $ultimo_factor Bs</p>";
+                    echo "<p>Fecha: $ultima_fecha</p>";
+                } else {
+                    echo "<p>No hay registros en la tabla 'factor'.</p>";
+                }
+                ?>     
+            </div>
+           
+
+
+        
+           
+                
             </div>
         </section>
 

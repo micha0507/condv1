@@ -35,6 +35,7 @@
                 <li class="boton_menu"><img src="./img/icon/nomina_icon.png"><a href="">Nómina</a></a>
                 <li class="boton_menu"><img src="./img/icon/miembros_icon.png"><a href="./anadir_miembro.php">Añadir miembro</a></li>
                 <li class="boton_menu"><img src="./img/icon/edit.png"><a href="./editor.php">Publicaciones</a></li>
+                <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./factorcambiario.php">Factor cambiario</a></li>
 
             </ul>    
         

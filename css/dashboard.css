@@ -200,9 +200,44 @@ body {
     overflow: hidden; 
 }
 .marcos_panel table {
-  
-
+    width: 100%;
+    border-collapse: collapse;
+   
+    font-size: 1rem;
+    text-align: left;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
 }
+
+.marcos_panel th, .marcos_panel td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.marcos_panel th {
+    background-color: #4caf50;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+}
+
+.marcos_panel tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.marcos_panel tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+.marcos_panel td {
+    text-align: center;
+    color: #333;
+}
+
 .first_row {
     display: grid;
     grid-template-columns: 30% 70%;
@@ -271,6 +306,7 @@ body {
 
 .marcos_panel th {
     font-weight: bold;
+    color: black;
     background-color: rgb(241, 241, 241); /* Color de fondo de la cabecera */
 }
 
