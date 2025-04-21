@@ -8,12 +8,13 @@
     <title>Pago Registrado</title>
 </head>
 <body>
-    <!-- barra de navegación -->
-    <?php include 'navbar.php'; ?>
-    <!-- pantalla principal -->
-    <div class="principal">
-        <div class="cuadro_exito">
-            <h2>Pago registrado exitosamente</h2>
+<!-- Modal -->
+    <div id="modalPagoRegistrado" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 20px; border-radius: 10px; text-align: center; width: 300px;">
+            <h2>Pago Registrado</h2>
+            <p>El pago se ha registrado exitosamente.</p>
+            <button id="btnImprimir" style="margin-top: 10px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir</button>
+            <button id="btnCerrarModal" style="margin-top: 10px; padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">Cerrar</button>
         </div>
     </div>
 </body>

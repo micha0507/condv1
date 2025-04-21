@@ -21,12 +21,12 @@ if ($resultado_factor && $resultado_factor->num_rows > 0) {
     <meta charset="UTF-8">
     <title>Carga de Pago</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    </head>
-<body>
+</head>
 
+<body>
     <!-- barra de navegación -->
     <?php include 'navbar.php'; ?>
-    
+   
     <!-- PRINCIPAL -->
     <section class="principal">
         <h1>Carga del Pago:</h1>
@@ -57,9 +57,9 @@ if ($resultado_factor && $resultado_factor->num_rows > 0) {
                 // Consulta de facturas asociadas al propietario con INNER JOIN a residencias
                 $propietario_id = $row['id'];
                 $query_facturas = "
-                SELECT f.id_factura, f.fecha_emision, f.fecha_vencimiento, f.periodo, f.monto, r.nro AS nro_residencia, r.id AS residencia_id, f.status 
-                FROM facturas f 
-                INNER JOIN residencias r ON f.id_residencia = r.id 
+                SELECT f.id_factura, f.fecha_emision, f.fecha_vencimiento, f.periodo, f.monto, r.nro AS nro_residencia, r.id AS residencia_id, f.status
+                FROM facturas f
+                INNER JOIN residencias r ON f.id_residencia = r.id
                 WHERE f.propietario_id = $propietario_id";
                 $result_facturas = $conexion->query($query_facturas);
 
@@ -78,12 +78,13 @@ if ($resultado_factor && $resultado_factor->num_rows > 0) {
                 echo "</thead>";
                 echo "<tbody>";
                 while ($factura = $result_facturas->fetch_assoc()) {
-                    echo "<tr data-residencia-id='" . htmlspecialchars($factura['residencia_id']) . "'>";
+                    $monto_mostrado = $factura['monto'] * $ultimo_factor; // Multiplicar por el factor aquí
+                    echo "<tr data-residencia-id='" . htmlspecialchars($factura['residencia_id']) . "' data-monto-base='" . htmlspecialchars($factura['monto']) . "'>";
                     echo "<td>" . htmlspecialchars($factura['id_factura']) . "</td>";
                     echo "<td>" . htmlspecialchars($factura['fecha_emision']) . "</td>";
                     echo "<td>" . htmlspecialchars($factura['fecha_vencimiento']) . "</td>";
                     echo "<td>" . htmlspecialchars($factura['periodo']) . "</td>";
-                    echo "<td>" . htmlspecialchars($factura['monto']) . "</td>";
+                    echo "<td>" . number_format($monto_mostrado, 2) . " Bs</td>"; // Mostrar el monto multiplicado
                     echo "<td>" . htmlspecialchars($factura['nro_residencia']) . "</td>";
                     echo "<td>" . htmlspecialchars($factura['status']) . "</td>";
                     echo "</tr>";
@@ -98,7 +99,7 @@ if ($resultado_factor && $resultado_factor->num_rows > 0) {
             }
             }
             ?>
-        </section> 
+        </section>
         <script>
             // Limpiar todo después de enviar el formulario
             $(document).ajaxStop(function() {
@@ -114,10 +115,10 @@ if ($resultado_factor && $resultado_factor->num_rows > 0) {
             <form method="POST" action="./modelo/procesar_pago.php" id="pagoForm">
                 <input type="hidden" id="propietario_id" name="propietario_id" value="<?php echo $propietario_id ?? ''; ?>">
                 <input type="hidden" id="factura_afectada" name="factura_afectada" value="">
-                
+               
                 <label for="fecha">Fecha del Pago:</label>
                 <input type="date" id="fecha" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
-                
+               
                 <label for="status">Estado del Pago:</label>
                 <select id="status" name="status" required>
                     <option value="Pendiente">Pendiente</option>
@@ -139,80 +140,103 @@ if ($resultado_factor && $resultado_factor->num_rows > 0) {
         </div>
     </section>
     <script>
-        $(document).ready(function() {
-            // Obtener el factor desde PHP
-            const factor = <?php echo json_encode($ultimo_factor); ?>;
+    $(document).ready(function() {
+        // Obtener el factor desde PHP
+        const factor = <?php echo json_encode($ultimo_factor); ?>;
 
-            // Detectar clic en una fila de la tabla
-            $('#tabla_facturas tbody tr').on('click', function() {
-                $(this).toggleClass('selected');
+        // Detectar clic en una fila de la tabla
+        $('#tabla_facturas tbody tr').on('click', function() {
+            $(this).toggleClass('selected');
 
-                // Calcular el monto total de las filas seleccionadas
-                let totalMonto = 0;
-                $('#tabla_facturas tbody tr.selected').each(function() {
-                    let monto = parseFloat($(this).find('td:nth-child(5)').text());
-                    totalMonto += monto * factor;
-                });
-
-                // Actualizar el campo de monto visualmente
-                $('#monto').val(totalMonto.toFixed(2) + ' Bs');
+            // Calcular la suma de los montos seleccionados (multiplicados por el factor)
+            let totalMontoVisual = 0;
+            $('#tabla_facturas tbody tr.selected').each(function() {
+                let montoBase = parseFloat($(this).attr('data-monto-base')); // Monto original de la factura
+                if (!isNaN(montoBase)) {
+                    totalMontoVisual += montoBase * factor; // Multiplicar el monto por el factor
+                }
             });
 
-            // Enviar el formulario para cada factura seleccionada
-            $('#registrarPago').on('click', function() {
-                let facturasSeleccionadas = [];
-                $('#tabla_facturas tbody tr.selected').each(function() {
-                    let facturaId = $(this).find('td:first').text(); // Asume que el ID está en la primera columna
-                    facturasSeleccionadas.push(facturaId);
-                });
-
-                if (facturasSeleccionadas.length === 0) {
-                    alert('Por favor, seleccione al menos una factura.');
-                    return;
-                }
-
-                // Ocultar el botón para evitar múltiples clics
-                $('#registrarPago').prop('disabled', true);
-
-                // Ciclo para enviar el formulario una vez por cada factura seleccionada
-                let index = 0;
-
-                function enviarFormulario() {
-                    if (index < facturasSeleccionadas.length) {
-                        let facturaId = facturasSeleccionadas[index];
-
-                        // Asignar el ID de la factura al campo oculto
-                        $('#factura_afectada').val(facturaId);
-
-                        // Enviar el formulario mediante AJAX
-                        $.ajax({
-                            url: $('#pagoForm').attr('action'),
-                            method: 'POST',
-                            data: $('#pagoForm').serialize(),
-                            success: function(response) {
-                                console.log('Pago registrado para factura ID:', facturaId);
-                                index++;
-                                enviarFormulario(); // Llamar recursivamente para la siguiente factura
-                            },
-                            error: function() {
-                                alert('Ocurrió un error al registrar el pago para la factura ID: ' + facturaId);
-                                $('#registrarPago').prop('disabled', false);
-                            }
-                        });
-                    } else {
-                        alert('Pagos registrados exitosamente.');
-                        $('#registrarPago').prop('disabled', false);
-
-                        // Limpiar el formulario después de la carga
-                        $('#pagoForm')[0].reset();
-                        $('#monto').val('');
-                        $('#tabla_facturas tbody tr').removeClass('selected');
-                    }
-                }
-
-                enviarFormulario(); // Iniciar el ciclo de envío
-            });
+            // Actualizar el campo de monto visualmente (multiplicado por el factor)
+            $('#monto').val(totalMontoVisual.toFixed(2) + ' Bs');
         });
+
+        // Enviar el formulario para cada factura seleccionada
+        $('#registrarPago').on('click', function() {
+            let facturasSeleccionadas = [];
+
+            // Recopilar las facturas seleccionadas y calcular el monto individual multiplicado por el factor
+            $('#tabla_facturas tbody tr.selected').each(function() {
+                let facturaId = $(this).find('td:first').text(); // Asume que el ID está en la primera columna
+                let montoBase = parseFloat($(this).attr('data-monto-base')); // Monto original de la factura
+                if (!isNaN(montoBase)) {
+                    let montoCalculado = montoBase * factor; // Multiplicar el monto por el factor
+                    facturasSeleccionadas.push({
+                        id: facturaId,
+                        monto: montoCalculado.toFixed(2) // Guardar el monto calculado
+                    });
+                }
+            });
+
+            if (facturasSeleccionadas.length === 0) {
+                alert('Por favor, seleccione al menos una factura.');
+                return;
+            }
+
+            // Ocultar el botón para evitar múltiples clics
+            $('#registrarPago').prop('disabled', true);
+
+            // Ciclo para enviar el formulario una vez por cada factura seleccionada
+            let index = 0;
+
+            function enviarFormulario() {
+                if (index < facturasSeleccionadas.length) {
+                    let factura = facturasSeleccionadas[index];
+
+                    // Asignar el ID de la factura y el monto calculado al formulario
+                    $('#factura_afectada').val(factura.id);
+                    $('#monto').val(factura.monto); // Enviar el monto calculado individualmente
+
+                    // Crear un objeto FormData para enviar los datos correctamente
+                    let formData = new FormData();
+                    formData.append('propietario_id', $('#propietario_id').val());
+                    formData.append('factura_afectada', factura.id);
+                    formData.append('fecha', $('#fecha').val());
+                    formData.append('status', $('#status').val());
+                    formData.append('monto', factura.monto); // Enviar el monto calculado
+                    formData.append('referencia', $('#referencia').val());
+
+                    // Enviar el formulario mediante AJAX
+                    $.ajax({
+                        url: $('#pagoForm').attr('action'),
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            console.log('Pago registrado para factura ID:', factura.id);
+                            index++;
+                            enviarFormulario(); // Llamar recursivamente para la siguiente factura
+                        },
+                        error: function() {
+                            alert('Ocurrió un error al registrar el pago para la factura ID: ' + factura.id);
+                            $('#registrarPago').prop('disabled', false);
+                        }
+                    });
+                } else {
+                    alert('Pagos registrados exitosamente.');
+                    $('#registrarPago').prop('disabled', false);
+
+                    // Limpiar el formulario después de la carga
+                    $('#pagoForm')[0].reset();
+                    $('#monto').val('');
+                    $('#tabla_facturas tbody tr').removeClass('selected');
+                }
+            }
+
+            enviarFormulario(); // Iniciar el ciclo de envío
+        });
+    });
     </script>
 </body>
 </html>
