@@ -5,6 +5,21 @@ include './conexion.php';
 
 use Dompdf\Dompdf;
 
+// Consulta para obtener los datos del condominio
+$sql_condominio = "SELECT rif, nombre, direccion FROM datos_condominio LIMIT 1";
+$result_condominio = $conexion->query($sql_condominio);
+
+if ($result_condominio && $result_condominio->num_rows > 0) {
+    $condominio = $result_condominio->fetch_assoc();
+    $rif = htmlspecialchars($condominio['rif']);
+    $nombre = htmlspecialchars($condominio['nombre']);
+    $direccion = htmlspecialchars($condominio['direccion']);
+} else {
+    $rif = "N/A";
+    $nombre = "N/A";
+    $direccion = "N/A";
+}
+
 // Consulta para obtener los pagos junto con el nombre y apellido del propietario
 $sql = "
     SELECT p.*, pr.nombre, pr.apellido 
@@ -18,15 +33,21 @@ if ($result && $result->num_rows > 0) {
     $referencia_anterior = null;
     $html = '';
 
+    // Encabezado con los datos del condominio
+    $html .= '<div style="font-family: Arial, sans-serif; margin: 20px;">';
+    $html .= '<h1 style="text-align: center; color: #4CAF50;">Comprobante de Pago</h1>';
+    $html .= '<p style="text-align: center; margin: 0;"><strong> ' . $rif . ' </strong></p>';
+    $html .= '<p style="text-align: center; margin: 0;"><strong>' . $nombre . '</strong> </p>';
+    $html .= '<p style="text-align: center; margin: 0;">' . $direccion . '</p>';
+    $html .= '<hr style="margin: 20px 0; border: 1px solid #4CAF50;">';
+
     // Recorrer los pagos hasta encontrar una referencia diferente
     while ($row = $result->fetch_assoc()) {
         if ($referencia_anterior !== null && $row['referencia'] !== $referencia_anterior) {
             break; // Detener el bucle si la referencia es diferente
         }
 
-        // Preparar los datos del comprobante para este pago con estilo moderno
-        $html .= '<div style="font-family: Arial, sans-serif; margin: 20px;">';
-        $html .= '<h1 style="text-align: center; color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">Comprobante de Pago</h1>';
+        // Preparar los datos del comprobante para este pago
         $html .= '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
         $html .= '<tr style="background-color: #f2f2f2; color: #333;">';
         $html .= '<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Campo</th>';
@@ -63,7 +84,6 @@ if ($result && $result->num_rows > 0) {
         $html .= '</table>';
         $html .= '<p style="text-align: center; margin-top: 20px; color: #555;">Gracias por su pago.</p>';
         $html .= '<div style="page-break-after: always;"></div>'; // Agregar salto de página
-        $html .= '</div>';
 
         $referencia_anterior = $row['referencia'];
     }
