@@ -24,7 +24,30 @@ include './modelo/conexion.php';
               
                 
     <! -- ENCABEZADO PRINCIPAL -->
-        <div class="encabezado_principal"></div>
+        <div class="encabezado_principal">
+     <div class="caja_titulo">
+                    <?php
+                
+
+                $sql = "SELECT rif, nombre, direccion FROM datos_condominio WHERE id = 1";
+                $resultado = $conexion->query($sql); // Execute the query and assign the result to $resultado
+
+                if ($resultado && $resultado->num_rows > 0) {
+                    $fila = $resultado->fetch_assoc();
+                    
+                    echo  $fila['nombre'];
+                    echo "<p><strong>". $fila['rif']."</strong> ";
+                    
+                } else {
+                    echo "<p>No se encontraron datos para el condominio con ID 1.</p>";
+                }
+
+                
+                ?>
+     </div>   
+    
+</div>
+        
     <! -- BARRA DE BUSQUEDA Y TITULO -->
         
             <h1 class="titulo">Estadísticas</h1>
@@ -52,16 +75,19 @@ include './modelo/conexion.php';
             
         
         <! -- PANEL DE DE ADMINISTRACION  -->
-        <di class="panel">
+        <div class="panel">
             
             <div class="first_row">
-                <! -- PANEL PAGOS VENCIDOS  -->
+                <! -- PANEL PAGOS PENDIENTES  -->
                 <a href="">
                 <div class="marcos_panel">
-                    <div class="para_morosos">
+                    <div class="para_pendientes">
                         <?php
-                        // Consulta para contar los registros con status "Pendiente"
-                        $sql_morosos = "SELECT COUNT(*) AS total_pendientes FROM facturas WHERE status = 'Pendiente'";
+                        // Consulta para contar los registros con status "Pendiente" y fecha de vencimiento menor a la fecha actual
+                        $sql_morosos = "SELECT COUNT(*) AS total_pendientes 
+                                        FROM facturas 
+                                        WHERE status = 'Pendiente' 
+                                        AND fecha_vencimiento >= (SELECT MAX(fecha_emision) FROM facturas)";
                         $resultado_morosos = $conexion->query($sql_morosos);
 
                         // Verificamos si hay resultados
@@ -76,7 +102,7 @@ include './modelo/conexion.php';
                         <p>Pagos vencidos</p>
                     </div>
                 </div>
-                </a> 
+                </a>
             
                 <! -- PANEL ULTIMOS PAGOS TABLA  -->
                 <?php include 'modelo/ultimos_pagos.php'; ?>
@@ -128,6 +154,6 @@ include './modelo/conexion.php';
             </div>
         </section>
 
-    </div>
+    </div> </div>
 </body>
 </html>

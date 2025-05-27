@@ -36,7 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($message)) echo $message; ?>
         <form method="POST" action="">
             <label for="factor">Factor  ($ x Bs):</label>
-            <input type="text" id="factor" name="factor" required>
+            <div class="factor">
+                <input type="text" id="factor" name="factor" required>
+                <button type="button" onclick="obtenerFactorBCV()">Obtener factor</button>
+            </div>
 
             <label for="monto_mensual">Monto Mensual (USD):</label>
             <input type="number" id="monto_mensual" name="monto_mensual" step="0.01" required>
@@ -44,5 +47,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Registrar</button>
         </form>
     </div>
-</body>
+
+    <script>
+    function obtenerFactorBCV() {
+        fetch('./modelo/obtiene_factor.php')
+            .then(response => response.text())
+            .then(data => {
+                // Buscar el número en la respuesta
+                let match = data.match(/Valor USD encontrado: ([\d.,]+)/);
+                if (match && match[1]) {
+                    document.getElementById('factor').value = match[1].replace('.', '').replace(',', '.');
+                } else {
+                    alert('No se pudo obtener el valor del BCV.');
+                }
+            })
+            .catch(() => {
+                alert('Error al consultar el valor del BCV.');
+            });
+    }
+    </script>
+
+
+</html></body></body>
 </html>

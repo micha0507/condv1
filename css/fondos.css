@@ -14,20 +14,85 @@ body {
     overflow: hidden;
     display: flex;
 }
+label {
+    width: 100%;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+    transition: color 0.3s ease;
+}
 
-.principal {
+.contenido{
     width: 100%;
     height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    color: #000000;
-    overflow-y: auto;
-    padding: 20px;
-
+  
 }
+
+h1 {
+    margin-bottom: 50px;
+}
+.marcos {
+    color: rgb(0, 0, 0);
+    padding: 0;
+    text-align: center;
+    border: 1px solid #ccc;
+    height: 200px;
+    border-radius: 5px;
+    display: flex;
+    margin: 10px;
+    flex-direction: column;
+    flex: 1;
+    text-decoration: none;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+    padding: 10px;
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.marcos:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.resumen-fondos {
+    display: flex;
+    width: 300px;
+    align-items: center;
+    flex-direction: column;
+}
+#pagos {
+border-color: green;
+}
+#gastos {
+    border-color: red;    
+}
+.btn-modal {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-modal:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+
 form {
     width: 50%;
     margin-top: 10px;
@@ -82,4 +147,13 @@ button {
     margin-bottom: 10px;
 
     
+}
+select {
+    width: 60%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
