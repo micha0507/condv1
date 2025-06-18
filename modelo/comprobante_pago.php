@@ -32,79 +32,78 @@ $result = $conexion->query($sql);
 if ($result && $result->num_rows > 0) {
     $referencia_anterior = null;
     $html = '';
-
-    // Encabezado con los datos del condominio
-    $html .= '<div style="font-family: Arial, sans-serif; margin: 20px;">';
-    $html .= '<h1 style="text-align: center; color: #4CAF50;">Comprobante de Pago</h1>';
-    $html .= '<p style="text-align: center; margin: 0;"><strong> ' . $rif . ' </strong></p>';
-    $html .= '<p style="text-align: center; margin: 0;"><strong>' . $nombre . '</strong> </p>';
-    $html .= '<p style="text-align: center; margin: 0;">' . $direccion . '</p>';
-    $html .= '<hr style="margin: 20px 0; border: 1px solid #4CAF50;">';
-
-    // Recorrer los pagos hasta encontrar una referencia diferente
+    $pagos = [];
     while ($row = $result->fetch_assoc()) {
         if ($referencia_anterior !== null && $row['referencia'] !== $referencia_anterior) {
-            break; // Detener el bucle si la referencia es diferente
+            break;
         }
-
-        // Preparar los datos del comprobante para este pago
-        $html .= '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
-        $html .= '<tr style="background-color: #f2f2f2; color: #333;">';
-        $html .= '<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Campo</th>';
-        $html .= '<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Valor</th>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">Nro.</td>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($row['id']) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr style="background-color: #f9f9f9;">';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">Propietario</td>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($row['nombre'] . ' ' . $row['apellido']) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">Fecha</td>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($row['fecha']) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr style="background-color: #f9f9f9;">';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">Estado</td>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($row['status']) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">Monto</td>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($row['monto']) . ' Bs</td>';
-        $html .= '</tr>';
-        $html .= '<tr style="background-color: #f9f9f9;">';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">Referencia</td>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($row['referencia']) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">Factura Afectada</td>';
-        $html .= '<td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($row['factura_afectada']) . '</td>';
-        $html .= '</tr>';
-        $html .= '</table>';
-        $html .= '<p style="text-align: center; margin-top: 20px; color: #555;">Gracias por su pago.</p>';
-        $html .= '<div style="page-break-after: always;"></div>'; // Agregar salto de página
-
+        $pagos[] = $row;
         $referencia_anterior = $row['referencia'];
     }
 
-    // Instancia la clase Dompdf
+    $total = count($pagos);
+    foreach ($pagos as $i => $row) {
+        $html .= '
+        <div style="font-family: Arial, sans-serif; margin: 30px; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 2px 8px #eee;">
+            <!-- Encabezado de la factura -->
+            <div style="background: #f5f5f5; padding: 20px 30px; border-radius: 8px 8px 0 0;">
+                <h2 style="margin: 0; color: #333;">' . $nombre . '</h2>
+                <p style="margin: 2px 0 0 0; font-size: 14px;">RIF: ' . $rif . '</p>
+                <p style="margin: 2px 0 0 0; font-size: 14px;">' . $direccion . '</p>
+                <h1 style="text-align: right; color: #4CAF50; margin: -40px 0 0 0;">PAGO</h1>
+            </div>
+            <!-- Datos del propietario y factura -->
+            <div style="padding: 20px 30px 10px 30px;">
+                <div style="width: 60%; float: left;">
+                    <h3 style="margin-bottom: 5px; color: #555;">Datos del Propietario</h3>
+                    <p style="margin: 2px 0;"><strong>Nombre:</strong> ' . htmlspecialchars($row['nombre'] . ' ' . $row['apellido']) . '</p>
+                </div>
+                <div style="width: 38%; float: right; text-align: right;">
+                    <p style="margin: 2px 0;"><strong>Nro. Pago:</strong> ' . htmlspecialchars($row['id']) . '</p>
+                    <p style="margin: 2px 0;"><strong>Fecha:</strong> ' . htmlspecialchars($row['fecha']) . '</p>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+            <!-- Detalle del pago -->
+            <div style="padding: 10px 30px 20px 30px;">
+                <h3 style="color: #555; margin-bottom: 10px;">Detalle del Pago</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+                    <tr style="background: #e8f5e9;">
+                        <th style="padding: 10px; border: 1px solid #c8e6c9; text-align: left;">Descripción</th>
+                        <th style="padding: 10px; border: 1px solid #c8e6c9; text-align: right;">Monto</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #e0e0e0;">Pago de condominio - Ref: ' . htmlspecialchars($row['referencia']) . '</td>
+                        <td style="padding: 10px; border: 1px solid #e0e0e0; text-align: right;">' . htmlspecialchars($row['monto']) . ' Bs</td>
+                    </tr>
+                </table>
+                <table style="width: 100%; margin-top: 10px; font-size: 14px;">
+                    <tr>
+                        <td style="padding: 5px 0;"><strong>Estado:</strong> ' . htmlspecialchars($row['status']) . '</td>
+                        <td style="padding: 5px 0; text-align: right;"><strong>Factura Afectada:</strong> ' . htmlspecialchars($row['factura_afectada']) . '</td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Pie de página -->
+            <div style="background: #f5f5f5; padding: 10px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #888; font-size: 13px;">
+                Gracias por su pago. Este documento es su comprobante oficial.
+            </div>
+        </div>';
+        // Solo agrega salto de página si NO es el último comprobante
+        if ($i < $total - 1) {
+            $html .= '<div style="page-break-after: always;"></div>';
+        }
+    }
+
     $dompdf = new Dompdf();
     $dompdf->loadHtml($html);
-
-    // (Opcional) Establece el tamaño y la orientación del papel
     $dompdf->setPaper('A4', 'portrait');
-
-    // Renderiza el HTML como PDF
     $dompdf->render();
-
-    // Envía el PDF generado al navegador para su visualización (vista previa)
     $dompdf->stream('comprobante_pago.pdf', ['Attachment' => 0]);
 } else {
     echo "No se encontraron pagos registrados.";
 }
 
-// Cerrar la conexión
 $conexion->close();
 
 ?>

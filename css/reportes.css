@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Roboto", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    overflow: hidden;
+    display: flex;
+}
+.BARRA
+{
+    width: 20%;
+}
+.principal {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.titulo {
+    justify-content: center;
+}
+.cuadros {
+    display: flex;
+    padding: 20px;
+    margin-top: 50px;
+    justify-content: center;
+    align-items: center;
+}
+.cuadro_balance {
+    background-color: rgb(245, 245, 245);
+    width: 15%;
+    padding: 20px;
+    height: 400px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.titulo_balance {
+   margin-top: 20px;
+   margin-bottom: 10px;
+}
+.grafico_balance {
+    width: 100%;
+    background-color: bisque;
+    height: 280px;
+}
+.grafico {
+    background-color: rgb(245, 245, 245);
+    width: 90%;
+    height: 100%;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.marco_cuadros_report {
+    display: flex;
+    align-items: center;
+   
+   flex-direction: column;
+   
+    color: aqua;
+}
+.lineas {
+    background-color: rgb(255, 255, 255);
+    
+    
+}
+.cuadros_reportes {
+    display: inline-flex;
+    align-items: center;
+    width: 200px;
+    margin: 20px;
+    border-radius: 10px;
+    border-color: rgb(155, 155, 155);
+    border-width: 1px;
+    border-style: solid;
+    padding: 15px;
+    box-shadow: 1px 39px 73px -16px rgba(0,0,0,0.54);
+    -webkit-box-shadow: 1px 39px 73px -16px rgba(0,0,0,0.54);
+    -moz-box-shadow: 1px 39px 73px -16px rgba(0,0,0,0.54);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.cuadros_reportes:hover {
+    border-color: #00eaff;
+    box-shadow: 0 0 16px 2px #00eaff, 1px 39px 73px -16px rgba(0,0,0,0.54);
+}
+
+.cuadros_reportes  {
+   text-decoration: none;
+   color: black;
+}
+#L1 {
+    z-index: 100;
+}
+#L2 {
+    z-index: 99;
+}
+#L3 {}

@@ -78,8 +78,8 @@ include './modelo/conexion.php';
         <div class="panel">
             
             <div class="first_row">
-                <! -- PANEL PAGOS PENDIENTES  -->
-                <a href="">
+                <! -- PANEL FACTURAS PENDIENTES  -->
+                <a href="./facturas_pendientes.php">
                 <div class="marcos_panel">
                     <div class="para_pendientes">
                         <?php
@@ -99,7 +99,7 @@ include './modelo/conexion.php';
                         }
                         ?>
                         <h1 class="numeros_morosos"><?php echo $total_pendientes; ?></h1>
-                        <p>Pagos vencidos</p>
+                        <p>Facturas pendientes</p>
                     </div>
                 </div>
                 </a>
