@@ -151,7 +151,7 @@ body {
  
 }
 #tipo_rif {
-    width: 10%;
+    width: auto;
     font-size: 12px;
 }
 .carga_pago label {
