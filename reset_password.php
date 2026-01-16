@@ -4,12 +4,10 @@
 <head>
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <link rel="stylesheet" href="../css/bootstrap.css">
+   <link rel="stylesheet" type="text/css" href="../css/style.css">
    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
-   <!-- <link rel="stylesheet" href="css/all.min.css"> -->
-   <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
-   <link href="https://tresplazas.com/web/img/big_punto_de_venta.png" rel="shortcut icon">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
    <title>Restablecer Contraseña</title>
 </head>
 
@@ -17,15 +15,15 @@
    <img class="wave" src="img/wave.png">
    <div class="container">
       <div class="img">
-         <img src="img/bg.svg">
+                  <img src="img/bg.svg">
       </div>
-      <div class="login-content">
+      <div class="login-content animate__animated animate__fadeInUp">
          <form method="post" action="">
             <img src="img/avatar.svg">
             <h3 class="title">RECUPERAR CONTRASEÑA</h3>
             <?php
-               include "reset_password/recovery.php";
-               include "modelo/conexion.php";
+            include "reset_password/recovery.php";
+            include "modelo/conexion.php";
             ?>
             <div class="input-div one">
                <div class="i">
@@ -33,7 +31,7 @@
                </div>
                <div class="div">
                   <h5>Correo Electronico</h5>
-                  <input id="usuario" type="text" class="input" name="email_propietario">
+                  <input id="usuario" type="text" class="input" name="email_admin">
                </div>
             </div>
             <div class="text-center">

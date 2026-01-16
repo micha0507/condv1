@@ -38,7 +38,7 @@ if (!empty($_POST["btningresar"])) {
                 $_SESSION["password_admin"] = $datos->password_admin;
                 $_SESSION["rol_admin"] = $datos->rol_admin;
 
-                header("location: ../condv1/index_admin.php");
+                header("location: ../index_admin.php");
             } else {
                 // Si no se encuentra en ninguna de las dos tablas
                 echo "<div class='alert alert-danger'>Acceso denegado</div>";

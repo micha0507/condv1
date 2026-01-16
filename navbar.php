@@ -39,7 +39,10 @@
                 <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./factorcambiario.php">Factor cambiario</a></li>
                 <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./fondos.php">Fondos</a></li>
                 <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./reportes.php">Reportes</a></li>
-
+                <li class="boton_menu">
+                    <img src="./img/avatar.svg" alt="icono cerrar sesión">
+                    <a href="./login.php">Cerrar sesión</a>
+                </li>
             </ul>    
         
         </div>
