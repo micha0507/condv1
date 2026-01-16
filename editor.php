@@ -43,22 +43,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/publicacion.css">
     <title>Editor de publicaciones</title>
 </head>
 <body>
     <?php include 'navbar.php'; ?>
 
     <div class="principal">
-        <h2>Editor de Nueva Publicación</h2>
+        <h2>Crear Nueva Publicación</h2>
         <?php if (isset($mensaje)): ?>
             <p><?php echo $mensaje; ?></p>
         <?php endif; ?>
         <form method="post">
-            <div id="editor">
-                <p>¡Escribe aquí tu contenido!</p>
+            <div class="pub-card">
+                <div class="pub-row">
+                    <label class="label">Título</label>
+                    <input type="text" id="titulo" class="input" placeholder="Título de la publicación (opcional)">
+                </div>
+                <div class="pub-row">
+                    <label class="label">Destinado a</label>
+                    <select id="audiencia" class="input">
+                        <option value="Administración">Personal administrativo</option>
+                        <option value="Propietarios">Propietarios</option>
+                        <option value="General">Todos</option>
+                    </select>
+                </div>
+                <div id="editor" class="editor">
+                    <p>¡Escribe aquí tu contenido!</p>
+                </div>
+                <input type="hidden" name="contenido" id="contenido_input">
+                <div class="pub-actions">
+                    <button class="btn btn-secondary" type="button" id="btn_preview">Vista previa</button>
+                    <button class="btn btn-primary" type="submit">Guardar Publicación</button>
+                </div>
+                <div id="preview_area" class="preview_area" style="display:none;"></div>
             </div>
-            <input type="hidden" name="contenido" id="contenido_input">
-            <button class="boton_publicacion" type="submit">Guardar Publicación</button>
         </form>
     </div>
 
@@ -90,18 +109,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (editor) {
                 const contenidoHTML = editor.getData().trim();
-                if (contenidoHTML === '') {
+                const titulo = document.getElementById('titulo').value.trim();
+                const audiencia = document.getElementById('audiencia').value;
+                if (contenidoHTML === '' && titulo === '') {
                     mensajeDiv.textContent = 'El contenido no puede estar vacío.';
                     this.appendChild(mensajeDiv);
-                    event.preventDefault(); // Evitar el envío del formulario si el contenido está vacío
+                    event.preventDefault();
                     return;
                 }
-                document.getElementById('contenido_input').value = contenidoHTML;
+
+                // Preparamos el contenido final incluyendo título y audiencia
+                let finalHTML = '';
+                if (titulo !== '') {
+                    finalHTML += '<h2>' + titulo.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</h2>';
+                }
+                finalHTML += '<div class="audiencia_meta">Para: ' + audiencia + '</div>';
+                finalHTML += contenidoHTML;
+
+                document.getElementById('contenido_input').value = finalHTML;
             } else {
                 mensajeDiv.textContent = 'El editor aún no se ha inicializado.';
                 this.appendChild(mensajeDiv);
-                event.preventDefault(); // Evitar el envío del formulario si el editor no está listo
+                event.preventDefault();
             }
+        });
+
+        // Vista previa
+        document.getElementById('btn_preview').addEventListener('click', function() {
+            if (!editor) return;
+            const contenidoHTML = editor.getData().trim();
+            const titulo = document.getElementById('titulo').value.trim();
+            const audiencia = document.getElementById('audiencia').value;
+            let finalHTML = '';
+            if (titulo !== '') finalHTML += '<h2>' + titulo.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</h2>';
+            finalHTML += '<div class="audiencia_meta">Para: ' + audiencia + '</div>';
+            finalHTML += contenidoHTML || '<p><em>Sin contenido aún</em></p>';
+            const preview = document.getElementById('preview_area');
+            preview.innerHTML = finalHTML;
+            preview.style.display = preview.style.display === 'none' ? 'block' : 'none';
+            preview.scrollIntoView({behavior: 'smooth'});
         });
     </script>
 </body>
