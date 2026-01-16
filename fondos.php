@@ -22,6 +22,7 @@ if (empty($_SESSION['id_admin'])) {
     <link rel="stylesheet" href="./css/navbar.css">
     <link rel="stylesheet" href="./css/fondos.css">
     <title>Fondos</title>
+       <link rel="icon" href="/img/ico_condo.ico">
 </head>
 <body>
     <?php include 'navbar.php'; ?> <!-- Incluir la barra de navegación -->

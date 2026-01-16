@@ -19,6 +19,7 @@ if (empty($_SESSION['id_admin'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/carga_masiva.css">
     <title>Carga Masiva de Pagos</title>
+       <link rel="icon" href="/img/ico_condo.ico">
     <style>
         .rif-search {
             position: relative;

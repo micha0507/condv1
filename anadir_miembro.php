@@ -155,6 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="./css/pagos.css"> <!-- agregado: estilos para la tabla de miembros -->
     <meta charset="UTF-8">
     <title>Añadir / Editar Miembro</title>
+       <link rel="icon" href="/img/ico_condo.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 

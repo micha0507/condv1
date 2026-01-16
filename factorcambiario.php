@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/factor.css">
     <title>Factor Cambiario</title>
+       <link rel="icon" href="/img/ico_condo.ico">
 </head>
 <body>
     <?php include 'navbar.php'; ?>

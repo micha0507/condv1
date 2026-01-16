@@ -9,7 +9,8 @@
    <!-- <link rel="stylesheet" href="css/all.min.css"> -->
    <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
    <link href="https://tresplazas.com/web/img/big_punto_de_venta.png" rel="shortcut icon">
-   <title>Inicio de sesión</title>
+   <title>Sistema de Condominios - Urbanizacion La Maroma</title>
+   <link rel="icon" href="/img/ico_condo.ico">
    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 

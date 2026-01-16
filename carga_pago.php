@@ -29,6 +29,7 @@ if ($resultado_factor && $resultado_factor->num_rows > 0) {
     <link rel="stylesheet" href="./css/pagos.css">
     <meta charset="UTF-8">
     <title>Carga de Pago</title>
+       <link rel="icon" href="/img/ico_condo.ico">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 

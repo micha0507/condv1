@@ -30,7 +30,7 @@ if (!empty($_POST["btningresar"])) {
                 $_SESSION["apellido"] = $datos->apellido;
                 $_SESSION["rol"] = $datos->rol;
 
-                header("location: ../inicio.php");
+                header("location: ../propietario.php");
             } elseif ($datos = $sql_personal->fetch_object()) {
                 // Si el usuario es personal de alto nivel
                 $_SESSION["id_admin"] = $datos->id_admin;

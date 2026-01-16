@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="./css/dashboard.css">
     <link rel="stylesheet" href="./css/publicacion.css">
     <title>Editor de publicaciones</title>
+       <link rel="icon" href="/img/ico_condo.ico">
 </head>
 <body>
     <?php include 'navbar.php'; ?>

@@ -8,6 +8,7 @@ include './modelo/conexion.php';
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./css/publicacion.css">
     <title>Publicaciones</title>
+       <link rel="icon" href="/img/ico_condo.ico">
 </head>
 <body>
 <?php include 'navbar.php'; ?>

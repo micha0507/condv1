@@ -11,6 +11,7 @@
    <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
    <link href="https://tresplazas.com/web/img/big_punto_de_venta.png" rel="shortcut icon">
    <title>Registro de Condominio</title>
+      <link rel="icon" href="/img/ico_condo.ico">
 </head>
 
 <body>
