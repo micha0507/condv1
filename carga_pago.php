@@ -1,6 +1,15 @@
 <?php
 include './modelo/conexion.php';
 
+session_start();
+if (empty($_SESSION['id_admin'])) {
+    echo " <script languaje='JavaScript'>
+    alert('Estas intentando entrar al Sistema sin haberte registrado o iniciado sesión');
+    location.assign('login.php');
+    </script>";
+    exit;
+}
+
 // Consulta para obtener el último registro de la tabla 'factor'
 $sql_factor = "SELECT factor FROM factor ORDER BY id DESC LIMIT 1";
 $resultado_factor = $conexion->query($sql_factor);

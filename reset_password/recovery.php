@@ -50,7 +50,6 @@ $message = '
     <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 30px;">
         <div style="max-width: 500px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 30px;">
             <div style="text-align: center;">
-                <img src="" alt="" style="width: 200px; margin-bottom: 20px;">
                 <h2 style="color: #2d1ad9;">Restablecimiento de Contrase&ntilde;a</h2>
             </div>
             <p style="color: #333; font-size: 16px;">

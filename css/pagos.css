@@ -252,6 +252,133 @@ body {
     background-color: #f0f0f0;
 }
 
+/* Estilos para la tabla de miembros activos */
+.table-responsive { overflow-x:auto; -webkit-overflow-scrolling: touch; }
+
+.tabla-propietarios {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+}
+
+.tabla-propietarios thead th {
+  background: #4CAF50;
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.tabla-propietarios tbody td {
+  padding: 12px 14px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f2f2f2;
+  color: #000 !important;
+}
+
+/* Columnas específicas */
+.tabla-propietarios td.rif { white-space: nowrap; font-weight: 700; color: #000 !important; }
+.tabla-propietarios td.nombre,
+.tabla-propietarios td.apellido,
+.tabla-propietarios td.email {
+  max-width: 260px;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Acciones */
+.acciones-col { white-space: nowrap; display:flex; gap:8px; align-items:center; justify-content:flex-end; }
+.btn-edit {
+  display:inline-block;
+  background: #fff;
+  color: #2a6bd6;
+  border: 1px solid #d0e2ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 13px;
+}
+.btn-edit:hover { background:#f3f8ff; }
+
+.btn-delete {
+  background:#d9534f;
+  color:#fff;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+}
+.btn-delete:hover { background:#c3413f; }
+
+/* Hover fila */
+.tabla-propietarios tbody tr:hover { background: #fafafa; }
+
+/* Responsive: convertir a tarjetas en pantallas pequeñas */
+@media (max-width: 760px) {
+  .tabla-propietarios thead { display: none; }
+  .tabla-propietarios, .tabla-propietarios tbody, .tabla-propietarios tr, .tabla-propietarios td {
+    display: block;
+    width: 100%;
+  }
+  .tabla-propietarios tr {
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    padding: 10px;
+    background: #fff;
+    box-shadow: none;
+  }
+  .tabla-propietarios td {
+    padding: 8px 10px;
+    border-bottom: 0;
+  }
+  .tabla-propietarios td::before {
+    content: attr(data-label);
+    display: inline-block;
+    width: 120px;
+    font-weight: 700;
+    color: #666;
+    margin-right: 6px;
+  }
+  .acciones-col { justify-content:flex-start; margin-top:6px; }
+}
+
+/* Asegurar que botones <button> con clase .btn-edit tengan mismo estilo que el enlace */
+.btn-edit,
+button.btn-edit,
+input[type="submit"].btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  color: #2a6bd6;
+  border: 1px solid #d0e2ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Hover igual para botones y enlaces */
+.btn-edit:hover,
+button.btn-edit:hover,
+input[type="submit"].btn-edit:hover {
+  background: #f3f8ff;
+}
+
+/* Opcional: eliminar estilos conflictivos de .btn (si existen) para no alterar diseño */
+.btn.btn-edit { padding:6px 10px; }
+
 
 
 

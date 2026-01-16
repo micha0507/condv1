@@ -1,4 +1,17 @@
-<!-- filepath: c:\xampp\htdocs\condv1\condominio_datos.php -->
+<?php
+include './modelo/conexion.php';
+
+session_start();
+if (empty($_SESSION['id_admin'])) {
+    echo " <script languaje='JavaScript'>
+    alert('Estas intentando entrar al Sistema sin haberte registrado o iniciado sesión');
+    location.assign('login.php');
+    </script>";
+    exit;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

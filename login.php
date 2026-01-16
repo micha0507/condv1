@@ -17,11 +17,11 @@
    <img class="wave" src="img/wave.png">
    <div class="container">
       <div class="img">
-         <img src="img/bg.svg">
+         <img src="">
       </div>
       <div class="login-content">
          <form method="post" action="">
-            <img src="img/avatar.svg">
+            <img src="img/icono_condo.jpg">
             <h2 class="title">BIENVENIDO</h2>
             <?php
                $conexion=new mysqli("localhost","root","","condominio");

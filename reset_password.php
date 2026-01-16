@@ -15,12 +15,12 @@
    <img class="wave" src="img/wave.png">
    <div class="container">
       <div class="img">
-                  <img src="img/bg.svg">
+         <img src="">
       </div>
-      <div class="login-content animate__animated animate__fadeInUp">
+      <div class="login-content">
          <form method="post" action="">
-            <img src="img/avatar.svg">
-            <h3 class="title">RECUPERAR CONTRASEÑA</h3>
+            <img src="/img/icono_condo.jpg">
+            <h2 class="title">REGISTRARSE</h2>
             <?php
             include "reset_password/recovery.php";
             include "modelo/conexion.php";

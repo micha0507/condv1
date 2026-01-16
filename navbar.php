@@ -14,7 +14,7 @@
     <nav class="navegacion">
         <div class="div_logo">
             <a href="./index_admin.php">
-                <img src="./img/logo_tecnostar.jpg" alt="logo tecnostar" class="logo">
+                <img src="./img/icono_condo.jpg" alt="logo tecnostar" class="logo">
             </a>
         </div>
         <! -- BOTON -->
@@ -41,7 +41,7 @@
                 <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./reportes.php">Reportes</a></li>
                 <li class="boton_menu">
                     <img src="./img/avatar.svg" alt="icono cerrar sesión">
-                    <a href="./login.php">Cerrar sesión</a>
+                    <a href="/controlador/controlador_cerrar_sesion.php">Cerrar sesión</a>
                 </li>
             </ul>    
         

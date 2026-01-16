@@ -43,7 +43,7 @@ if (!empty($token)) {
                 $update = $conexion->prepare("UPDATE administrador SET password_admin = ?, reset_token = NULL WHERE id_admin = ?");
                 $update->bind_param("si", $plain, $admin_id);
                 if ($update->execute()) {
-                    $message_html = "<div class='alert alert-success'>Contraseña restablecida con éxito. <a href='../login.php'>Iniciar sesión</a></div>";
+                    $message_html = "<div class='alert alert-success' style='background:linear-gradient(90deg,#e6ffed,#d4f7e2);border:1px solid #2ecc71;color:#155724;padding:12px 16px;border-radius:6px;box-shadow:0 2px 6px rgba(46,204,113,0.15);font-weight:600;display:inline-block;'>Contraseña restablecida con éxito. <a href='../login.php'>Iniciar sesión</a></div>";
                     $token_valid = false; // evitar reuso del formulario
                 } else {
                     $message_html = "<div class='alert alert-danger'>Error al actualizar la contraseña.</div>";
@@ -106,7 +106,7 @@ $conexion->close();
    <img class="wave" src="../img/wave.png">
    <div class="container">
       <div class="img">
-         <img src="../img/bg.svg">
+         <img src="">
       </div>
       <div class="login-content animate__animated animate__fadeInUp">
          <?php
@@ -119,8 +119,7 @@ $conexion->close();
          if ($token_valid): ?>
          <form method="post" action="">
             <input type="hidden" name="token" value="<?php echo htmlspecialchars($token, ENT_QUOTES); ?>">
-            <img src="../img/avatar.svg">
-
+            <img src="/img/icono_condo.jpg">
             <div class="input-div one">
                <div class="i">
                   <i class="fas fa-user"></i>
