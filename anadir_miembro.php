@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     $allow_insert = true;
                 }
-            } else { // edit
+            } else { 
                 // si existe y no es el mismo registro que estamos editando -> conflicto
                 if ($exists && $rif !== $original_rif) {
                     $message = "<div class='alert alert-warning'>El RIF ya está registrado por otro propietario.</div>";

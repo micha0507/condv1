@@ -20,16 +20,51 @@ if (!empty($_POST["btnreset"])) {
             die("Connection failed: " . $conexion->connect_error);
         }
 
-        $sql = $conexion->prepare("SELECT * FROM administrador WHERE email_admin = ?");
-        $sql->bind_param("s", $email);
-        $sql->execute();
-        $result = $sql->get_result();
+        // Buscar primero en administradores
+        $stmt = $conexion->prepare("SELECT id_admin FROM administrador WHERE email_admin = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user_type = null;
+        $user_id = null;
 
-        if ($result->num_rows > 0) {
-$token = bin2hex(random_bytes(50));
-$sql = $conexion->prepare("UPDATE administrador SET reset_token = ? WHERE email_admin = ?");
-$sql->bind_param("ss", $token, $email);
-$sql->execute();
+        if ($result && $result->num_rows > 0) {
+            $user_type = 'admin';
+            $row = $result->fetch_assoc();
+            $user_id = $row['id_admin'];
+        } else {
+            // Si no está en administradores, buscar en propietarios
+            // Asegurar que la columna reset_token exista en la tabla propietario
+            $resCheck = $conexion->query("SELECT COUNT(*) AS cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='condominio' AND TABLE_NAME='propietario' AND COLUMN_NAME='reset_token'");
+            if ($resCheck) {
+                $rowCheck = $resCheck->fetch_assoc();
+                if (empty($rowCheck['cnt'])) {
+                    // Intentar añadir la columna si no existe
+                    @$conexion->query("ALTER TABLE propietario ADD COLUMN reset_token VARCHAR(255) NULL");
+                }
+            }
+
+            $stmt2 = $conexion->prepare("SELECT id, email_propietario FROM propietario WHERE email_propietario = ?");
+            $stmt2->bind_param("s", $email);
+            $stmt2->execute();
+            $result2 = $stmt2->get_result();
+            if ($result2 && $result2->num_rows > 0) {
+                $user_type = 'propietario';
+                $row2 = $result2->fetch_assoc();
+                $user_id = $row2['id'];
+            }
+        }
+
+        if ($user_type !== null) {
+            $token = bin2hex(random_bytes(50));
+            if ($user_type === 'admin') {
+                $upd = $conexion->prepare("UPDATE administrador SET reset_token = ? WHERE email_admin = ?");
+                $upd->bind_param("ss", $token, $email);
+            } else {
+                $upd = $conexion->prepare("UPDATE propietario SET reset_token = ? WHERE email_propietario = ?");
+                $upd->bind_param("ss", $token, $email);
+            }
+            $upd->execute();
 
 // Construir la URL base dinámicamente para evitar rutas hardcodeadas
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';

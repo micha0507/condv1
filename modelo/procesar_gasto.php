@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Ejecutar la consulta
     if ($conexion->query($sql) === TRUE) {
-        echo "Gasto registrado exitosamente.";
+        echo "<script>alert('Gasto registrado exitosamente.'); window.location.href='../gastos_eventuales.php';</script>";
     } else {
         echo "Error al registrar el gasto: " . $conexion->error;
     }

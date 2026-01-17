@@ -16,41 +16,103 @@ if (!empty($_GET['token'])) {
 }
 
 if (!empty($token)) {
-    $sql = $conexion->prepare("SELECT id_admin FROM administrador WHERE reset_token = ?");
-    $sql->bind_param("s", $token);
-    $sql->execute();
-    $result = $sql->get_result();
 
-    if ($result && $result->num_rows > 0) {
-        $token_valid = true;
-        $row = $result->fetch_assoc();
-        $admin_id = $row['id_admin'];
+   // Helper to check if a given column exists in a table
+   $columnExists = function($conexion, $table, $column) {
+      $table_esc = $conexion->real_escape_string($table);
+      $column_esc = $conexion->real_escape_string($column);
+      $res = $conexion->query("SHOW COLUMNS FROM `{$table_esc}` LIKE '{$column_esc}'");
+      return $res && $res->num_rows > 0;
+   };
 
-        // Procesar envío del formulario
-        if (!empty($_POST["btnresetpassword"])) {
-            $new_password = $_POST["new_password"] ?? '';
-            $confirm_password = $_POST["confirm_password"] ?? '';
+   $user_type = null;
+   $user_id = null;
+   $token_column = null;
 
-            if (empty($new_password) || empty($confirm_password)) {
-                $message_html = "<div class='alert alert-danger'>Campos vacíos</div>";
-            } elseif ($new_password !== $confirm_password) {
-                $message_html = "<div class='alert alert-danger'>Las contraseñas no coinciden</div>";
-            } elseif (strlen($new_password) < 6 || strlen($new_password) > 50) {
-                $message_html = "<div class='alert alert-danger'>La contraseña debe tener entre 6 y 50 caracteres.</div>";
+   // Tables and their id/password column names
+   $candidates = [
+      'administrador' => ['id_col' => 'id_admin', 'pass_col' => 'password_admin'],
+      'propietario'   => ['id_col' => 'id', 'pass_col' => 'pass']
+   ];
+
+   // Possible token column names to try (add more if your schema uses different names)
+   $token_columns_to_try = ['reset_token', 'token', 'resetToken'];
+
+   foreach ($candidates as $table => $meta) {
+      foreach ($token_columns_to_try as $col) {
+         if (!$columnExists($conexion, $table, $col)) {
+            continue;
+         }
+         // column exists, try to find a matching record
+         $sql = "SELECT {$meta['id_col']} FROM `{$table}` WHERE `{$col}` = ? LIMIT 1";
+         $stmt = $conexion->prepare($sql);
+         if ($stmt === false) {
+            continue;
+         }
+         $stmt->bind_param("s", $token);
+         $stmt->execute();
+         $result = $stmt->get_result();
+         if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $user_type = $table === 'administrador' ? 'admin' : 'propietario';
+            $user_id = $row[$meta['id_col']];
+            $token_column = $col;
+            break 2; // found the user, exit both loops
+         }
+      }
+   }
+
+   if ($user_type !== null) {
+      $token_valid = true;
+
+      // Procesar envío del formulario
+      if (!empty($_POST["btnresetpassword"])) {
+         $new_password = $_POST["new_password"] ?? '';
+         $confirm_password = $_POST["confirm_password"] ?? '';
+
+         if (empty($new_password) || empty($confirm_password)) {
+            $message_html = "<div class='alert alert-danger'>Campos vacíos</div>";
+         } elseif ($new_password !== $confirm_password) {
+            $message_html = "<div class='alert alert-danger'>Las contraseñas no coinciden</div>";
+         } elseif (strlen($new_password) < 6 || strlen($new_password) > 50) {
+            $message_html = "<div class='alert alert-danger'>La contraseña debe tener entre 6 y 50 caracteres.</div>";
+         } else {
+            // Guardar contraseña en texto plano (NO RECOMENDADO) para compatibilidad con la base existente
+            $plain = $new_password;
+
+            // Determine table meta
+            if ($user_type === 'admin') {
+               $table = 'administrador';
+               $pass_col = 'password_admin';
+               $id_col = 'id_admin';
             } else {
-                // Guardar contraseña en texto plano (NO RECOMENDADO)
-                $plain = $new_password;
-                $update = $conexion->prepare("UPDATE administrador SET password_admin = ?, reset_token = NULL WHERE id_admin = ?");
-                $update->bind_param("si", $plain, $admin_id);
-                if ($update->execute()) {
-                    $message_html = "<div class='alert alert-success' style='background:linear-gradient(90deg,#e6ffed,#d4f7e2);border:1px solid #2ecc71;color:#155724;padding:12px 16px;border-radius:6px;box-shadow:0 2px 6px rgba(46,204,113,0.15);font-weight:600;display:inline-block;'>Contraseña restablecida con éxito. <a href='../login.php'>Iniciar sesión</a></div>";
-                    $token_valid = false; // evitar reuso del formulario
-                } else {
-                    $message_html = "<div class='alert alert-danger'>Error al actualizar la contraseña.</div>";
-                }
+               $table = 'propietario';
+               $pass_col = 'pass';
+               $id_col = 'id';
             }
-        }
-    } else {
+
+            // Use the actual token column name found ($token_column) to clear it
+            if (empty($token_column)) {
+               // Fallback: clear a common column name if none detected
+               $token_column = 'reset_token';
+            }
+
+            $sql_update = "UPDATE `{$table}` SET `{$pass_col}` = ?, `{$token_column}` = NULL WHERE `{$id_col}` = ?";
+            $update = $conexion->prepare($sql_update);
+            if ($update) {
+               $update->bind_param("si", $plain, $user_id);
+               if ($update->execute()) {
+                  $message_html = "<div class='alert alert-success' style='background:linear-gradient(90deg,#e6ffed,#d4f7e2);border:1px solid #2ecc71;color:#155724;padding:12px 16px;border-radius:6px;box-shadow:0 2px 6px rgba(46,204,113,0.15);font-weight:600;display:inline-block;'>Contraseña restablecida con éxito. <a href='../login.php'>Iniciar sesión</a></div>";
+                  $token_valid = false; // evitar reuso del formulario
+               } else {
+                  $message_html = "<div class='alert alert-danger'>Error al actualizar la contraseña.</div>";
+               }
+            } else {
+               $message_html = "<div class='alert alert-danger'>Error al preparar la actualización de la contraseña.</div>";
+            }
+         }
+      }
+   } else {
         $message_html = <<<HTML
 <div class="d-flex justify-content-center align-items-center" style="min-height:30vh;padding:30px;">
   <div class="card text-white bg-danger shadow" style="max-width:420px;width:100%;">
@@ -120,7 +182,7 @@ $conexion->close();
          if ($token_valid): ?>
          <form method="post" action="">
             <input type="hidden" name="token" value="<?php echo htmlspecialchars($token, ENT_QUOTES); ?>">
-            <img src="/img/icono_condo.jpg">
+            <img src="/img/icono_condo.jpg"><br>
             <div class="input-div one">
                <div class="i">
                   <i class="fas fa-user"></i>

@@ -41,6 +41,7 @@ if (empty($_SESSION['id_admin'])) {
             <option value="Servicios Públicos">Servicios Públicos</option>
             <option value="Reparaciones">Reparaciones</option>
             <option value="Limpieza">Limpieza</option>
+            <option value="Nomina">Nomina</option>
             <option value="Otros">Otros</option>
         </select>
         
@@ -53,7 +54,7 @@ if (empty($_SESSION['id_admin'])) {
         
         <button type="submit">Registrar Gasto</button>
     </form>
-    </form>
+
     </div>
     </div>
 </body>
