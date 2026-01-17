@@ -207,6 +207,7 @@ $residencias = $stmtR->get_result();
                 <button type="submit">Cargar pago</button>
             </div>
         </form>
+                            <a href="/controlador/controlador_cerrar_sesion.php">Cerrar sesión</a>
     </div>
 </body>
 </html>
