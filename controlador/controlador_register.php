@@ -1,33 +1,53 @@
 <?php 
-  
+
 if(!empty($_POST["btnregistrar"])){
-    if(empty($_POST["usuario_admin"]) or empty($_POST["nombre_completo_admin"]) or empty($_POST["rif_admin"]) or empty($_POST["email_admin"]) or empty($_POST["password_admin"])){
+    // 1. Añadimos la validación para que no esté vacío
+    if(
+        empty($_POST["usuario_admin"]) || 
+        empty($_POST["nombre_completo_admin"]) || 
+        empty($_POST["rif_admin"]) || 
+        empty($_POST["email_admin"]) || 
+        empty($_POST["password_admin"]) ||
+        empty($_POST["nombre_condominio"]) ||
+        empty($_POST["direccion_condominio"]) 
+    ){
         echo "<div class='alert alert-danger'>Uno de los campos está vacios</div>";
-    
     }else{
 
-    /*Almacenamiento de Datos ingresados a Base de datos */
+        $usuario_admin = $_POST["usuario_admin"];
+        $nombre_completo_admin = $_POST["nombre_completo_admin"];
+        $rif_admin = $_POST["rif_admin"];
+        $email_admin = $_POST["email_admin"];
+        $password_admin = $_POST["password_admin"];
+        $nombre_condominio = $_POST["nombre_condominio"];
+        $direccion_condominio = $_POST["direccion_condominio"]; 
 
-        $usuario_admin=$_POST["usuario_admin"];
-        $nombre_completo_admin=$_POST["nombre_completo_admin"];
-        $rif_admin=$_POST["rif_admin"];
-        $email_admin=$_POST["email_admin"];
-        $password_admin=$_POST["password_admin"];
+        $password_hash = password_hash($password_admin, PASSWORD_DEFAULT);
 
-        /* Guardar datos ingresados en las tablas */
+        // 2. Agregamos la data
+        $stmt = $conexion->prepare(
+            "INSERT INTO administrador (usuario_admin, nombre_completo_admin, rif_admin, email_admin, password_admin, nombre_condominio, direccion_condominio) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+        
+        // 3. Agregamos una "s" adicional y la variable al final
+        $stmt->bind_param(
+            "sssssss", 
+            $usuario_admin, 
+            $nombre_completo_admin, 
+            $rif_admin, 
+            $email_admin, 
+            $password_hash, 
+            $nombre_condominio,
+            $direccion_condominio
+        );
 
-        $sql=$conexion->query("INSERT INTO administrador (usuario_admin, nombre_completo_admin, rif_admin, email_admin, password_admin) 
-        VALUES ('$usuario_admin', '$nombre_completo_admin', '$rif_admin', '$email_admin', '$password_admin')");
-
-       /* Variable para que funcione el $query, es decir, poder guardar los datos ingresados en el registro */
-
-        if($sql){
-
+        if($stmt->execute()){
             echo "<div class='alert alert-success'>Registro de Condominio Exitoso $usuario_admin</div>";
             echo "<a href='login.php'>Iniciar Sesión</a>";
         }else{
             echo "<div class='alert alert-danger'>Error al Registrar</div>";
         }
+        $stmt->close();
     }
 }   
 ?>

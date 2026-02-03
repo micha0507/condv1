@@ -17,32 +17,72 @@ if (!empty($_POST["btningresar"])) {
             $usuario = $_POST["usuario"];
             $password = $_POST["password"];
 
-            // Consulta para verificar en la tabla 'propietario'
-            $sql_propietario = $conexion->query("SELECT * FROM propietario WHERE usuario='$usuario' AND pass='$password'");
-            
-            // Consulta para verificar en la tabla 'personal_alto_nivel'
-            $sql_personal = $conexion->query("SELECT * FROM administrador WHERE usuario_admin='$usuario' AND password_admin='$password'");
+            // Consulta para propietario (obtener por usuario, luego verificar contraseña)
+            $sql_propietario = $conexion->query("SELECT * FROM propietario WHERE usuario='$usuario'");
+
+            // Consulta para administrador (obtener por usuario, luego verificar contraseña)
+            $sql_personal = $conexion->query("SELECT * FROM administrador WHERE usuario_admin='$usuario'");
+
+            $login_success = false;
 
             if ($datos = $sql_propietario->fetch_object()) {
-                // Si el usuario es un propietario
-                $_SESSION["id"] = $datos->id;
-                $_SESSION["nombre"] = $datos->nombre;
-                $_SESSION["apellido"] = $datos->apellido;
-                $_SESSION["rol"] = $datos->rol;
+                // Verificar contraseña (soporta hash y migración desde texto plano)
+                if (password_verify($password, $datos->pass)) {
+                    $login_success = true;
+                    $_SESSION["id"] = $datos->id;
+                    $_SESSION["nombre"] = $datos->nombre;
+                    $_SESSION["apellido"] = $datos->apellido;
+                    $_SESSION["rol"] = $datos->rol;
 
-                header("location: ../propietario.php");
-            } elseif ($datos = $sql_personal->fetch_object()) {
-                // Si el usuario es personal de alto nivel
-                $_SESSION["id_admin"] = $datos->id_admin;
-                $_SESSION["usuario_admin"] = $datos->usuario_admin;
-                $_SESSION["password_admin"] = $datos->password_admin;
-                $_SESSION["rol_admin"] = $datos->rol_admin;
+                    header("location: ./propietario.php");
+                    exit;
+                } elseif ($password === $datos->pass) {
+                    // Contraseña almacenada en texto plano: migrar a hash
+                    $newhash = password_hash($password, PASSWORD_DEFAULT);
+                    $stmt_up = $conexion->prepare("UPDATE propietario SET pass = ? WHERE id = ?");
+                    $stmt_up->bind_param("si", $newhash, $datos->id);
+                    $stmt_up->execute();
+                    $stmt_up->close();
 
-                header("location: ../index_admin.php");
-            } else {
-                // Si no se encuentra en ninguna de las dos tablas
-                echo "<div class='alert alert-danger'>Acceso denegado</div>";
+                    // Iniciar sesión
+                    $login_success = true;
+                    $_SESSION["id"] = $datos->id;
+                    $_SESSION["nombre"] = $datos->nombre;
+                    $_SESSION["apellido"] = $datos->apellido;
+                    $_SESSION["rol"] = $datos->rol;
+
+                    header("location: ./propietario.php");
+                    exit;
+                }
             }
+
+            if (!$login_success && ($datos = $sql_personal->fetch_object())) {
+                if (password_verify($password, $datos->password_admin)) {
+                    $_SESSION["id_admin"] = $datos->id_admin;
+                    $_SESSION["usuario_admin"] = $datos->usuario_admin;
+                    $_SESSION["rol_admin"] = $datos->rol_admin;
+
+                    header("location: ./index_admin.php");
+                    exit;
+                } elseif ($password === $datos->password_admin) {
+                    // Migrar contraseña texto plano a hash
+                    $newhash = password_hash($password, PASSWORD_DEFAULT);
+                    $stmt_up = $conexion->prepare("UPDATE administrador SET password_admin = ? WHERE id_admin = ?");
+                    $stmt_up->bind_param("si", $newhash, $datos->id_admin);
+                    $stmt_up->execute();
+                    $stmt_up->close();
+
+                    $_SESSION["id_admin"] = $datos->id_admin;
+                    $_SESSION["usuario_admin"] = $datos->usuario_admin;
+                    $_SESSION["rol_admin"] = $datos->rol_admin;
+
+                    header("location: ./index_admin.php");
+                    exit;
+                }
+            }
+
+            // Si no se encontró o contraseña inválida
+            echo "<div class='alert alert-danger'>Acceso denegado</div>";
         }
     } else {
         echo "<div class='alert alert-danger'>Campos Vacíos</div>";

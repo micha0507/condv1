@@ -1,23 +1,23 @@
 <?php
 
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 include './conexion.php';
 
 use Dompdf\Dompdf;
 
 // Consulta para obtener los datos del condominio
-$sql_condominio = "SELECT rif, nombre, direccion FROM datos_condominio LIMIT 1";
+$sql_condominio = "SELECT rif_admin, nombre_condominio, direccion_condominio FROM administrador LIMIT 1";
 $result_condominio = $conexion->query($sql_condominio);
 
 if ($result_condominio && $result_condominio->num_rows > 0) {
     $condominio = $result_condominio->fetch_assoc();
-    $rif = htmlspecialchars($condominio['rif']);
-    $nombre = htmlspecialchars($condominio['nombre']);
-    $direccion = htmlspecialchars($condominio['direccion']);
+    $rif_admin = htmlspecialchars($condominio['rif_admin']);
+    $nombre_condominio = htmlspecialchars($condominio['nombre_condominio']);
+    $direccion_condominio = htmlspecialchars($condominio['direccion_condominio']);
 } else {
-    $rif = "N/A";
-    $nombre = "N/A";
-    $direccion = "N/A";
+    $rif_admin = "N/A";
+    $nombre_condominio = "N/A";
+    $direccion_condominio = "N/A";
 }
 
 // Consulta para obtener los pagos junto con el nombre y apellido del propietario
@@ -47,9 +47,9 @@ if ($result && $result->num_rows > 0) {
         <div style="font-family: Arial, sans-serif; margin: 30px; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 2px 8px #eee;">
             <!-- Encabezado de la factura -->
             <div style="background: #f5f5f5; padding: 20px 30px; border-radius: 8px 8px 0 0;">
-                <h2 style="margin: 0; color: #333;">' . $nombre . '</h2>
-                <p style="margin: 2px 0 0 0; font-size: 14px;">RIF: ' . $rif . '</p>
-                <p style="margin: 2px 0 0 0; font-size: 14px;">' . $direccion . '</p>
+                <h2 style="margin: 0; color: #333;">' . $nombre_condominio . '</h2>
+                <p style="margin: 2px 0 0 0; font-size: 14px;">RIF: ' . $rif_admin . '</p>
+                <p style="margin: 2px 0 0 0; font-size: 14px;">' . $direccion_condominio . '</p>
                 <h1 style="text-align: right; color: #4CAF50; margin: -40px 0 0 0;">PAGO</h1>
             </div>
             <!-- Datos del propietario y factura -->

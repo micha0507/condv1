@@ -16,7 +16,7 @@ if ($result_residencias && $result_residencias->num_rows > 0) {
 
         if ($result_verificar && $result_verificar->num_rows > 0) {
             // Consultar el monto mensual desde la tabla factor
-            $query_monto = "SELECT monto_mensual FROM factor LIMIT 1";
+            $query_monto = "SELECT factor, monto_mensual FROM factor ORDER BY id DESC LIMIT 1";
             $result_monto = $conexion->query($query_monto);
 
             if ($result_monto && $result_monto->num_rows > 0) {

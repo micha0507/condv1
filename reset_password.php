@@ -21,7 +21,7 @@
       <div class="login-content">
          <form method="post" action="">
             <img src="/img/icono_condo.jpg">
-            <h2 class="title">REGISTRARSE</h2>
+            <h2 class="title">RESTABLECER</h2>
             <?php
             include "reset_password/recovery.php";
             include "modelo/conexion.php";

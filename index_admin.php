@@ -37,22 +37,25 @@ if (empty($_SESSION['id_admin'])) {
     <! -- ENCABEZADO PRINCIPAL -->
         <div class="encabezado_principal">
      <div class="caja_titulo">
-                    <?php
-                
+                <?php
+                // Obtener el id_admin de la sesión
+                $id_admin = $_SESSION['id_admin'];
 
-                $sql = "SELECT rif, nombre, direccion FROM datos_condominio WHERE id = 1";
-                $resultado = $conexion->query($sql); // Execute the query and assign the result to $resultado
+                // Consulta usando el id_admin de la sesión
+                $sql = "SELECT nombre_completo_admin, rif_admin, nombre_condominio FROM administrador WHERE id_admin = ?";
+                $stmt = $conexion->prepare($sql);
+                $stmt->bind_param("i", $id_admin);
+                $stmt->execute();
+                $resultado = $stmt->get_result();
 
                 if ($resultado && $resultado->num_rows > 0) {
                     $fila = $resultado->fetch_assoc();
-                    
-                    echo  $fila['nombre'];
-                    echo "<p><strong>". $fila['rif']."</strong> ";
-                    
+                    echo "<p><strong>" . htmlspecialchars($fila['nombre_condominio']) . "</strong></p>";
+                    echo htmlspecialchars($fila['nombre_completo_admin']);
+                    echo "<p><strong>" . htmlspecialchars($fila['rif_admin']) . "</strong></p>";
                 } else {
-                    echo "<p>No se encontraron datos para el condominio con ID 1.</p>";
+                    echo "<p>No se encontraron datos para el administrador.</p>";
                 }
-
                 
                 ?>
      </div>   

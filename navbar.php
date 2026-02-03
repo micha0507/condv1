@@ -38,7 +38,6 @@
                 <li class="boton_menu"><img src="./img/icon/edit.png"><a href="./editor.php">Publicaciones</a></li>
                 <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./factorcambiario.php">Factor cambiario</a></li>
                 <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./fondos.php">Fondos</a></li>
-                <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./reportes.php">Reportes</a></li>
                 <li class="boton_menu">
                     <img src="./img/avatar.svg" alt="icono cerrar sesión">
                     <a href="/controlador/controlador_cerrar_sesion.php">Cerrar sesión</a>

@@ -57,7 +57,7 @@ if (!empty($token)) {
             $user_type = $table === 'administrador' ? 'admin' : 'propietario';
             $user_id = $row[$meta['id_col']];
             $token_column = $col;
-            break 2; // found the user, exit both loops
+            break 2; 
          }
       }
    }
@@ -77,8 +77,8 @@ if (!empty($token)) {
          } elseif (strlen($new_password) < 6 || strlen($new_password) > 50) {
             $message_html = "<div class='alert alert-danger'>La contraseña debe tener entre 6 y 50 caracteres.</div>";
          } else {
-            // Guardar contraseña en texto plano (NO RECOMENDADO) para compatibilidad con la base existente
-            $plain = $new_password;
+            // Hashear la nueva contraseña antes de guardar
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
             // Determine table meta
             if ($user_type === 'admin') {
@@ -100,7 +100,7 @@ if (!empty($token)) {
             $sql_update = "UPDATE `{$table}` SET `{$pass_col}` = ?, `{$token_column}` = NULL WHERE `{$id_col}` = ?";
             $update = $conexion->prepare($sql_update);
             if ($update) {
-               $update->bind_param("si", $plain, $user_id);
+               $update->bind_param("si", $hashed_password, $user_id);
                if ($update->execute()) {
                   $message_html = "<div class='alert alert-success' style='background:linear-gradient(90deg,#e6ffed,#d4f7e2);border:1px solid #2ecc71;color:#155724;padding:12px 16px;border-radius:6px;box-shadow:0 2px 6px rgba(46,204,113,0.15);font-weight:600;display:inline-block;'>Contraseña restablecida con éxito. <a href='../login.php'>Iniciar sesión</a></div>";
                   $token_valid = false; // evitar reuso del formulario

@@ -11,7 +11,7 @@
    <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
    <link href="https://tresplazas.com/web/img/big_punto_de_venta.png" rel="shortcut icon">
    <title>Registro de Condominio</title>
-      <link rel="icon" href="/img/ico_condo.ico">
+   <link rel="icon" href="/img/ico_condo.ico">
 </head>
 
 <body>
@@ -25,10 +25,10 @@
             <img src="/img/icono_condo.jpg">
             <h2 class="title">REGISTRARSE</h2>
             <?php
-               $conexion=new mysqli("localhost","root","","condominio");
-               $conexion->set_charset("utf8");
-               include "controlador/controlador_register.php";
-               include "modelo/conexion.php";
+            $conexion = new mysqli("localhost", "root", "", "condominio");
+            $conexion->set_charset("utf8");
+            include "controlador/controlador_register.php";
+            include "modelo/conexion.php";
             ?>
             <div class="input-div one">
                <div class="i">
@@ -36,7 +36,7 @@
                </div>
                <div class="div">
                   <h5>Usuario</h5>
-                  <input type="text" class="input" name="usuario_admin" id="usuario_admin" >
+                  <input type="text" class="input" name="usuario_admin" id="usuario_admin">
                </div>
             </div>
 
@@ -46,10 +46,10 @@
                </div>
                <div class="div">
                   <h5>Nombre Completo del Encargado</h5>
-                  <input type="text" class="input" name="nombre_completo_admin" id="nombre_completo_admin" >
+                  <input type="text" class="input" name="nombre_completo_admin" id="nombre_completo_admin">
                </div>
             </div>
-            
+
             <div class="input-div one">
                <div class="i">
                   <i class="fas fa-user"></i>
@@ -57,6 +57,26 @@
                <div class="div">
                   <h5>RIF del Condominio</h5>
                   <input type="text" class="input" name="rif_admin" id="rif_admin">
+               </div>
+            </div>
+
+            <div class="input-div one">
+               <div class="i">
+                  <i class="fas fa-user"></i>
+               </div>
+               <div class="div">
+                  <h5>Nombre del Condominio</h5>
+                  <input type="text" class="input" name="nombre_condominio" id="nombre_condominio">
+               </div>
+            </div>
+
+            <div class="input-div one">
+               <div class="i">
+                  <i class="fas fa-user"></i>
+               </div>
+               <div class="div">
+                  <h5>Ubicacion del Condominio</h5>
+                  <input type="text" class="input" name="direccion_condominio" id="direccion_condominio">
                </div>
             </div>
 
