@@ -1,5 +1,5 @@
-<!-- filepath: c:\xampp\htdocs\condv1\pagos.php -->
 <?php
+
 date_default_timezone_set('America/Caracas'); // Configura la zona horaria correcta
 
 session_start();
@@ -14,13 +14,15 @@ if (empty($_SESSION['id_admin'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagos</title>
-       <link rel="icon" href="/img/ico_condo.ico">
-    <link rel="stylesheet" href="./css/tabla_pagos.css"> <!-- Opcional: Enlace a un archivo CSS -->
+    <link rel="icon" href="/img/ico_condo.ico">
+    <link rel="stylesheet" href="./css/tabla_pagos.css">
 </head>
+
 <body>
     <?php include 'navbar.php'; ?>
 
@@ -125,7 +127,8 @@ if (empty($_SESSION['id_admin'])) {
                             echo "<td>" . htmlspecialchars($row['fecha_registro']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['propietario']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['monto']) . " Bs</td>";
+                            $monto_formateado = number_format($row['monto'], 2, ',', '.');
+                            echo "<td>" . $monto_formateado . " Bs</td>";
                             echo "<td>" . htmlspecialchars($row['referencia']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['factura_afectada']) . "</td>";
 
@@ -148,7 +151,66 @@ if (empty($_SESSION['id_admin'])) {
             </table>
             <!-- Botón Confirmar habilitado solo si hay pagos pendientes -->
             <button type="submit" style="margin-top: 20px;" <?php echo isset($has_pending) && $has_pending ? '' : 'disabled'; ?>>Confirmar</button>
+            <button type="button" id="btnAbrirModalPrint" style="margin-top: 20px; background-color: #e74c3c; color: white;">
+                Guardar PDF / Imprimir
+            </button>
+
         </form>
+
     </div>
+
+    <div id="modalFondo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+
+    <div id="modalConfirmacion" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; text-align: center; width: 300px;">
+        <span class="material-symbols-outlined" style="font-size: 48px; color: #1ecaf5;"></span>
+        <h2 style="color: #4CAF50;">Reporte Generado Exitosamente</h2>
+        <p>¿Deseas generar el archivo PDF con los filtros seleccionados?</p>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+            <button id="btnGenerarPDF" style="padding: 10px 20px; background-color: #1ecaf5; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir</button>
+            <button id="btnCerrarModal" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">Cerrar</button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function imprimirConFiltros() {
+            // Obtener los valores de los filtros actuales desde la URL
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Construir la nueva URL para el reporte incluyendo los filtros
+            const baseUrl = 'modelo/comprobante_listapagos.php';
+            const queryString = urlParams.toString();
+
+            // Abrir el reporte en una nueva pestaña con los filtros aplicados
+            window.open(`${baseUrl}?${queryString}`, '_blank');
+        }
+
+        $(document).ready(function() {
+            // Abrir el modal
+            $('#btnAbrirModalPrint').on('click', function() {
+                $('#modalFondo').fadeIn();
+                $('#modalConfirmacion').fadeIn();
+            });
+
+            // Cerrar el modal
+            $('#btnCerrarModal').on('click', function() {
+                $('#modalFondo').fadeOut();
+                $('#modalConfirmacion').fadeOut();
+            });
+
+            // Ejecutar la impresión en nueva pestaña con filtros
+            $('#btnGenerarPDF').on('click', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const baseUrl = 'modelo/comprobante_listapagos.php';
+                const queryString = urlParams.toString();
+
+                // Abrir en nueva pestaña
+                window.open(`${baseUrl}?${queryString}`, '_blank');
+
+                // Opcional: Cerrar el modal tras abrir el PDF
+                $('#btnCerrarModal').click();
+            });
+        });
+    </script>
 </body>
+
 </html>

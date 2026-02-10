@@ -23,9 +23,13 @@
             <img src="/img/icono_condo.jpg">
             <h2 class="title">RESTABLECER</h2>
             <?php
+
+            // Establecer conexión con la base de datos
             include "reset_password/recovery.php";
             include "modelo/conexion.php";
             ?>
+
+            <!-- Campos de entrada para el restablecimiento de contraseña -->
             <div class="input-div one">
                <div class="i">
                   <i class="fas fa-user"></i>

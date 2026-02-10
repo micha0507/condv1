@@ -1,20 +1,23 @@
 <?php
-// Incluye la conexion
+
 include 'conexion.php';
 
-// Para obtener los datos de la tabla pagos
+// Para obtener los datos de la tabla pagos junto con nombre y apellido del propietario
 $query = "
     SELECT
         pagos.id AS pago_id,
         pagos.fecha,
         pagos.fecha_registro,
         pagos.status,
-        pagos.id_propietario,
         pagos.monto,
         pagos.referencia,
-        pagos.factura_afectada
+        pagos.factura_afectada,
+        propietario.nombre,
+        propietario.apellido
     FROM
         pagos
+    INNER JOIN
+        propietario ON pagos.id_propietario = propietario.id
     ORDER BY
         pagos.id DESC
     LIMIT 3
@@ -23,7 +26,7 @@ $query = "
 // Ejecutar el script
 $result = $conexion->query($query);
 
-// Check if there are results
+// Se comprueba si hay resultados
 if ($result->num_rows > 0) {
     // Inicia la tabla
     echo "<div class='marcos_panel'>
@@ -33,13 +36,13 @@ if ($result->num_rows > 0) {
                 <th>Fecha</th>
                 <th>Fecha Registro</th>
                 <th>Status</th>
-                <th>ID Propietario</th>
+                <th>Propietario</th>
                 <th>Monto</th>
                 <th>Referencia</th>
                 <th>Factura Afectada</th>
             </tr>";
 
-    // Output data of each row
+    // Datos de salida de cada fila
     while ($row = $result->fetch_assoc()) {
         echo "<tr>
                 <td>{$row['pago_id']}</td>
@@ -55,16 +58,15 @@ if ($result->num_rows > 0) {
                 display: flex;
                 justify-content: center;
                 align-items: center;'>{$row['status']}</td>
-                <td>{$row['id_propietario']}</td>
-                <td>{$row['monto']}</td>
+                <td>{$row['nombre']} {$row['apellido']}</td>
+                <td>" . number_format($row['monto'], 2, ',', '.') . "</td>
                 <td>{$row['referencia']}</td>
                 <td>{$row['factura_afectada']}</td>
               </tr>";
     }
 
-    // End the table
+    // Cierra la tabla
     echo "</table></div>";
 } else {
     echo "No se encontraron resultados.";
 }
-

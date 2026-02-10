@@ -1,5 +1,5 @@
 <?php
-// Permitir peticiones desde cualquier origen (CORS)
+// Permitir peticiones desde cualquier origen
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json; charset=utf-8');
 

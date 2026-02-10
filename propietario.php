@@ -2,7 +2,10 @@
 session_start();
 require_once __DIR__ . '/modelo/conexion.php';
 
-function getPropietarioId($conexion) {
+// Función para obtener el ID del propietario desde la sesión o la base de datos
+
+function getPropietarioId($conexion)
+{
     if (!empty($_SESSION['id_propietario'])) return $_SESSION['id_propietario'];
     if (!empty($_SESSION['id'])) return $_SESSION['id'];
     if (!empty($_SESSION['email_propietario'])) {
@@ -97,12 +100,14 @@ $residencias = $stmtR->get_result();
 ?>
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Propietario - Facturas pendientes</title>
-   <link rel="icon" href="/img/ico_condo.ico">
+    <link rel="icon" href="/img/ico_condo.ico">
 </head>
+
 <body>
     <div class="container">
         <?php
@@ -124,20 +129,21 @@ $residencias = $stmtR->get_result();
             }
         }
         ?>
+        <!-- Mostrar información del usuario -->
         <div class="user-info">
             <?php if ($nombre || $apellido): ?>
-                <p>Usuario: <?=htmlspecialchars(trim($nombre . ' ' . $apellido))?></p>
+                <p>Usuario: <?= htmlspecialchars(trim($nombre . ' ' . $apellido)) ?></p>
             <?php endif; ?>
             <?php if ($rol): ?>
-                <p>Rol: <?=htmlspecialchars($rol)?></p>
+                <p>Rol: <?= htmlspecialchars($rol) ?></p>
             <?php endif; ?>
         </div>
         <h2>Facturas pendientes</h2>
         <?php if ($msg): ?>
-            <div style="color:green;"><?=htmlspecialchars($msg)?></div>
+            <div style="color:green;"><?= htmlspecialchars($msg) ?></div>
         <?php endif; ?>
         <?php if ($err): ?>
-            <div style="color:red;"><?=htmlspecialchars($err)?></div>
+            <div style="color:red;"><?= htmlspecialchars($err) ?></div>
         <?php endif; ?>
 
         <table border="1" cellpadding="6" cellspacing="0">
@@ -151,18 +157,18 @@ $residencias = $stmtR->get_result();
                 </tr>
             </thead>
             <tbody>
-            <?php while ($f = $facturas->fetch_assoc()): ?>
-                <tr>
-                    <td><?=htmlspecialchars($f['id_factura'])?></td>
-                    <td><?=htmlspecialchars($f['fecha_emision'])?></td>
-                    <td><?=htmlspecialchars($f['fecha_vencimiento'])?></td>
-                    <td><?=number_format($f['monto'],2)?></td>
-                    <td><?=htmlspecialchars($f['status'])?></td>
-                </tr>
-            <?php endwhile; ?>
+                <?php while ($f = $facturas->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($f['id_factura']) ?></td>
+                        <td><?= htmlspecialchars($f['fecha_emision']) ?></td>
+                        <td><?= htmlspecialchars($f['fecha_vencimiento']) ?></td>
+                        <td><?= number_format($f['monto'], 2) ?></td>
+                        <td><?= htmlspecialchars($f['status']) ?></td>
+                    </tr>
+                <?php endwhile; ?>
             </tbody>
         </table>
-
+        <!-- Formulario cargar pago -->
         <h3>Cargar pago</h3>
         <form method="post" action="">
             <input type="hidden" name="action" value="cargar_pago">
@@ -178,16 +184,18 @@ $residencias = $stmtR->get_result();
                     $res2 = $stmt2->get_result();
                     while ($ff = $res2->fetch_assoc()):
                     ?>
-                    <option value="<?=htmlspecialchars($ff['id_factura'])?>">ID <?=htmlspecialchars($ff['id_factura'])?> - Vence <?=htmlspecialchars($ff['fecha_vencimiento'])?> - Monto <?=number_format($ff['monto'],2)?></option>
+                        <option value="<?= htmlspecialchars($ff['id_factura']) ?>">ID <?= htmlspecialchars($ff['id_factura']) ?> - Vence <?= htmlspecialchars($ff['fecha_vencimiento']) ?> - Monto <?= number_format($ff['monto'], 2) ?></option>
                     <?php endwhile; ?>
                 </select>
             </div>
+            
             <div>
+                
                 <label>Residencia (nro):</label>
                 <select name="residencia_id">
                     <option value="0">-- No especificar --</option>
                     <?php while ($r = $residencias->fetch_assoc()): ?>
-                        <option value="<?=htmlspecialchars($r['id'])?>"><?=htmlspecialchars($r['nro'])?></option>
+                        <option value="<?= htmlspecialchars($r['id']) ?>"><?= htmlspecialchars($r['nro']) ?></option>
                     <?php endwhile; ?>
                 </select>
             </div>
@@ -197,7 +205,7 @@ $residencias = $stmtR->get_result();
             </div>
             <div>
                 <label>Fecha del pago:</label>
-                <input type="date" name="fecha_pago" value="<?=date('Y-m-d')?>">
+                <input type="date" name="fecha_pago" value="<?= date('Y-m-d') ?>">
             </div>
             <div>
                 <label>Referencia:</label>
@@ -207,7 +215,8 @@ $residencias = $stmtR->get_result();
                 <button type="submit">Cargar pago</button>
             </div>
         </form>
-                            <a href="/controlador/controlador_cerrar_sesion.php">Cerrar sesión</a>
+        <a href="/controlador/controlador_cerrar_sesion.php">Cerrar sesión</a>
     </div>
 </body>
+
 </html>

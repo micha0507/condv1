@@ -19,7 +19,7 @@ if (empty($_SESSION['id_admin'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datos del Condominio</title>
        <link rel="icon" href="/img/ico_condo.ico">
-    <link rel="stylesheet" href="./css/estilos.css"> <!-- Opcional: Enlace a un archivo CSS -->
+    <link rel="stylesheet" href="./css/estilos.css"> 
 </head>
 <body>
     <h1>Formulario de Datos del Condominio</h1>

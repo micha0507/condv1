@@ -355,3 +355,22 @@ body {
     margin-left: 30px;
     justify-content: flex-end;
 }
+.busqueda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn_buscar {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn_buscar:hover {
+    background-color: #2980b9;
+}

@@ -1,5 +1,5 @@
 <?php
-// filepath: c:\xampp\htdocs\condv1\modelo\procesar_pago.php
+
 include './conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

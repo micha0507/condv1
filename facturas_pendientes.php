@@ -25,56 +25,59 @@ if (empty($_SESSION['id_admin'])) {
        <link rel="icon" href="/img/ico_condo.ico">
 </head>
 <body>
-<! -- Aquí va el código de la página principal del panel de administrador -->
+<!-- Aquí va el código de la página principal del panel de administrador -->
     
     <?php include 'navbar.php'; ?>
 
-    <! -- pantalla principal -->
+    <!-- pantalla principal -->
     <div class="principal">
         <div class="tabla">
 
        <?php
-        // Obtener el último periodo existente en la tabla facturas
-        $sql_periodo = "SELECT MAX(periodo) as ultimo_periodo FROM facturas";
-        $result_periodo = $conexion->query($sql_periodo);
-        $ultimo_periodo = null;
-        if ($result_periodo && $row_periodo = $result_periodo->fetch_assoc()) {
-            $ultimo_periodo = $row_periodo['ultimo_periodo'];
-        }
+// Obtener el último periodo existente en la tabla facturas
+$sql_periodo = "SELECT MAX(periodo) as ultimo_periodo FROM facturas";
+$res_p = $conexion->query($sql_periodo);
+$ultimo_periodo = ($res_p->num_rows > 0) ? $res_p->fetch_assoc()['ultimo_periodo'] : null;
 
-        if ($ultimo_periodo) {
-            // Consulta con INNER JOIN para mostrar rif, nombre y apellido del propietario
-            $sql = "SELECT f.id_factura, f.periodo, f.status, p.rif, p.nombre, p.apellido 
-                    FROM facturas f 
-                    INNER JOIN propietario p ON f.propietario_id = p.id 
-                    WHERE f.status = 'Pendiente' AND f.periodo = ?";
-            $stmt = $conexion->prepare($sql);
-            $stmt->bind_param("s", $ultimo_periodo);
-            $stmt->execute();
-            $result = $stmt->get_result();
+if ($ultimo_periodo) {
+    // MODIFICACIÓN: Agregamos r.nro (residencia) y el JOIN con la tabla residencias
+    $sql = "SELECT f.id_factura, f.periodo, f.status, p.rif, p.nombre, p.apellido, r.nro as residencia
+            FROM facturas f
+            INNER JOIN propietario p ON f.propietario_id = p.id 
+            LEFT JOIN residencias r ON p.id = r.id_propietario
+            WHERE f.status = 'Pendiente' AND f.periodo = ?";
+            
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("s", $ultimo_periodo);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-            if ($result->num_rows > 0) {
-                echo "<table class='tabla_facturas'>";
-                echo "<tr><th>Factura</th><th>Periodo</th><th>Status</th><th>RIF</th><th>Nombre</th><th>Apellido</th></tr>";
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($row['id_factura']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['periodo']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['rif']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['nombre']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['apellido']) . "</td>";
-                    echo "</tr>";
-                }
-                echo "</table>";
-            } else {
-                echo "<p>No hay facturas pendientes para el último periodo ($ultimo_periodo).</p>";
-            }
-            $stmt->close();
-        } else {
-            echo "<p>No se pudo determinar el último periodo.</p>";
+    if ($result->num_rows > 0) {
+        echo "<table class='tabla_facturas'>";
+        // Agregamos la cabecera "Residencia"
+        echo "<tr><th>Factura</th><th>Periodo</th><th>Status</th><th>RIF</th><th>Nombre</th><th>Apellido</th><th>Residencia</th></tr>";
+        
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($row['id_factura']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['periodo']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['rif']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['nombre']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['apellido']) . "</td>";
+            // Imprimimos el número de residencia
+            echo "<td>" . (!empty($row['residencia']) ? htmlspecialchars($row['residencia']) : 'N/A') . "</td>";
+            echo "</tr>";
         }
-        ?>
+        echo "</table>";
+    } else {
+        echo "<p>No hay facturas pendientes para el último periodo ($ultimo_periodo).</p>";
+    }
+    $stmt->close();
+} else {
+    echo "<p>No se pudo determinar el último periodo.</p>";
+}
+?>
     </div>
      </div>
 </body>

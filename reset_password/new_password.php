@@ -5,20 +5,20 @@ $token = '';
 
 $conexion = new mysqli("localhost", "root", "", "condominio");
 if ($conexion->connect_error) {
-    die("Conexión fallida: " . $conexion->connect_error);
+   die("Conexión fallida: " . $conexion->connect_error);
 }
 
 // Si viene por GET o por POST (al enviar el formulario mantenemos el token en un input hidden)
 if (!empty($_GET['token'])) {
-    $token = $_GET['token'];
+   $token = $_GET['token'];
 } elseif (!empty($_POST['token'])) {
-    $token = $_POST['token'];
+   $token = $_POST['token'];
 }
 
 if (!empty($token)) {
 
-   // Helper to check if a given column exists in a table
-   $columnExists = function($conexion, $table, $column) {
+   // Función para verificar si una columna existe en una tabla
+   $columnExists = function ($conexion, $table, $column) {
       $table_esc = $conexion->real_escape_string($table);
       $column_esc = $conexion->real_escape_string($column);
       $res = $conexion->query("SHOW COLUMNS FROM `{$table_esc}` LIKE '{$column_esc}'");
@@ -29,13 +29,13 @@ if (!empty($token)) {
    $user_id = null;
    $token_column = null;
 
-   // Tables and their id/password column names
+   // Definir posibles tablas y columnas para buscar el token
    $candidates = [
       'administrador' => ['id_col' => 'id_admin', 'pass_col' => 'password_admin'],
       'propietario'   => ['id_col' => 'id', 'pass_col' => 'pass']
    ];
 
-   // Possible token column names to try (add more if your schema uses different names)
+   // Intentar encontrar el token en cada tabla y columna posible
    $token_columns_to_try = ['reset_token', 'token', 'resetToken'];
 
    foreach ($candidates as $table => $meta) {
@@ -43,7 +43,7 @@ if (!empty($token)) {
          if (!$columnExists($conexion, $table, $col)) {
             continue;
          }
-         // column exists, try to find a matching record
+         // Preparar y ejecutar la consulta para buscar el token
          $sql = "SELECT {$meta['id_col']} FROM `{$table}` WHERE `{$col}` = ? LIMIT 1";
          $stmt = $conexion->prepare($sql);
          if ($stmt === false) {
@@ -57,7 +57,7 @@ if (!empty($token)) {
             $user_type = $table === 'administrador' ? 'admin' : 'propietario';
             $user_id = $row[$meta['id_col']];
             $token_column = $col;
-            break 2; 
+            break 2;
          }
       }
    }
@@ -80,7 +80,7 @@ if (!empty($token)) {
             // Hashear la nueva contraseña antes de guardar
             $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-            // Determine table meta
+            // Determinar la tabla, columna de contraseña e ID según el tipo de usuario
             if ($user_type === 'admin') {
                $table = 'administrador';
                $pass_col = 'password_admin';
@@ -91,9 +91,9 @@ if (!empty($token)) {
                $id_col = 'id';
             }
 
-            // Use the actual token column name found ($token_column) to clear it
+            // Si no se detectó una columna de token válida, intentar con un nombre común
             if (empty($token_column)) {
-               // Fallback: clear a common column name if none detected
+               // Si la tabla tiene una columna 'reset_token', usarla; de lo contrario, asumir 'token'
                $token_column = 'reset_token';
             }
 
@@ -113,7 +113,7 @@ if (!empty($token)) {
          }
       }
    } else {
-        $message_html = <<<HTML
+      $message_html = <<<HTML
 <div class="d-flex justify-content-center align-items-center" style="min-height:30vh;padding:30px;">
   <div class="card text-white bg-danger shadow" style="max-width:420px;width:100%;">
    <div class="card-body text-center">
@@ -128,11 +128,11 @@ if (!empty($token)) {
   </div>
 </div>
 HTML;
-    }
+   }
 }
 
 if (empty($token)) {
-    $message_html = <<<HTML
+   $message_html = <<<HTML
 <div class="d-flex justify-content-center align-items-center" style="min-height:30vh;padding:30px;">
   <div class="card text-white bg-danger shadow" style="max-width:420px;width:100%;">
    <div class="card-body text-center">
@@ -162,7 +162,7 @@ $conexion->close();
    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
    <title>Restablecer Contraseña</title>
-      <link rel="icon" href="/img/ico_condo.ico">
+   <link rel="icon" href="/img/ico_condo.ico">
 </head>
 
 <body>
@@ -175,38 +175,38 @@ $conexion->close();
          <?php
          // Mostrar mensajes o la tarjeta de error
          if (!empty($message_html)) {
-             echo $message_html;
+            echo $message_html;
          }
 
          // Mostrar formulario solo si el token es válido
          if ($token_valid): ?>
-         <form method="post" action="">
-            <input type="hidden" name="token" value="<?php echo htmlspecialchars($token, ENT_QUOTES); ?>">
-            <img src="/img/icono_condo.jpg"><br>
-            <div class="input-div one">
-               <div class="i">
-                  <i class="fas fa-user"></i>
+            <form method="post" action="">
+               <input type="hidden" name="token" value="<?php echo htmlspecialchars($token, ENT_QUOTES); ?>">
+               <img src="/img/icono_condo.jpg"><br>
+               <div class="input-div one">
+                  <div class="i">
+                     <i class="fas fa-user"></i>
+                  </div>
+                  <div class="div">
+                     <h5>Nueva Contraseña:</h5>
+                     <input type="password" name="new_password" id="new_password" class="input" minlength="6" maxlength="50" required>
+                  </div>
                </div>
-               <div class="div">
-                  <h5>Nueva Contraseña:</h5>
-                  <input type="password" name="new_password" id="new_password" class="input" minlength="6" maxlength="50" required>
+               <div class="input-div pass">
+                  <div class="i">
+                     <i class="fas fa-lock"></i>
+                  </div>
+                  <div class="div">
+                     <h5>Confirmar Contraseña:</h5>
+                     <input type="password" name="confirm_password" id="confirm_password" class="input" minlength="6" maxlength="50" required>
+                  </div>
                </div>
-            </div>
-            <div class="input-div pass">
-               <div class="i">
-                  <i class="fas fa-lock"></i>
+               <div class="view">
+                  <div class="fas fa-eye verPassword" id="verPassword"></div>
                </div>
-               <div class="div">
-                  <h5>Confirmar Contraseña:</h5>
-                  <input type="password" name="confirm_password" id="confirm_password" class="input" minlength="6" maxlength="50" required>
-               </div>
-            </div>
-            <div class="view">
-               <div class="fas fa-eye verPassword" id="verPassword"></div>
-            </div>
 
-            <input type="submit" name="btnresetpassword" value="Restablecer Contraseña" class="btn">
-         </form>
+               <input type="submit" name="btnresetpassword" value="Restablecer Contraseña" class="btn">
+            </form>
          <?php endif; ?>
       </div>
    </div>

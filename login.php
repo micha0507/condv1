@@ -4,10 +4,9 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-   <link rel="stylesheet" href="css/bootstrap.css">   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <link rel="stylesheet" href="css/bootstrap.css">   
+   <link rel="stylesheet" type="text/css" href="css/style.css">
    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
-   <!-- <link rel="stylesheet" href="css/all.min.css"> -->
-   <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
    <link href="https://tresplazas.com/web/img/big_punto_de_venta.png" rel="shortcut icon">
    <title>Sistema de Condominios - Urbanizacion La Maroma</title>
    <link rel="icon" href="/img/ico_condo.ico">
@@ -25,6 +24,7 @@
             <img src="img/icono_condo.jpg">
             <h2 class="title">BIENVENIDO</h2>
             <?php
+            // Conexión a la base de datos
                $conexion=new mysqli("localhost","root","","condominio");
                $conexion->set_charset("utf8");
 
@@ -32,6 +32,7 @@
                include "modelo/conexion.php";
                include "controlador/recaptcha.php";
             ?>
+            <!-- Formulario Inicio de Sesion -->
             <div class="input-div one">
                <div class="i">
                   <i class="fas fa-user"></i>

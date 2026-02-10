@@ -32,9 +32,7 @@ if (empty($_SESSION['id_admin'])) {
         <div class="resumen-fondos">
             <?php include './modelo/calcula_fondos.php'; ?> <!-- Incluir el cálculo de fondos -->
         </div>
-
      
-
     <!-- Incluir el modal -->
     <?php include './modelo/modal_gastos_mes.php'; ?> <!-- Modal de gastos del mes -->
     <?php include './modelo/modal_pagos_mes.php'; ?> <!-- Modal de pagos del mes -->

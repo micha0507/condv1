@@ -1,5 +1,5 @@
 <?php
-// filepath: c:\xampp\htdocs\condv1\procesar_validacion.php
+
 include './modelo/conexion.php'; // Asegúrate de que esta ruta sea correcta
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['validar'])) {

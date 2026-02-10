@@ -7,8 +7,6 @@
 
    <link rel="stylesheet" type="text/css" href="css/style.css">
    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
-   <!-- <link rel="stylesheet" href="css/all.min.css"> -->
-   <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
    <link href="https://tresplazas.com/web/img/big_punto_de_venta.png" rel="shortcut icon">
    <title>Registro de Condominio</title>
    <link rel="icon" href="/img/ico_condo.ico">
@@ -25,11 +23,16 @@
             <img src="/img/icono_condo.jpg">
             <h2 class="title">REGISTRARSE</h2>
             <?php
+
+            // Establecer conexión con la base de datos
+
             $conexion = new mysqli("localhost", "root", "", "condominio");
             $conexion->set_charset("utf8");
             include "controlador/controlador_register.php";
             include "modelo/conexion.php";
             ?>
+
+            <!-- Campos de entrada para el registro del condominio -->
             <div class="input-div one">
                <div class="i">
                   <i class="fas fa-user"></i>
