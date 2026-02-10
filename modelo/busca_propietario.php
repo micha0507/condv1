@@ -1,59 +1,44 @@
 <?php
 include './conexion.php';
+ob_clean();
+header('Content-Type: application/json');
 
 if (isset($_GET['query'])) {
     $query = $conexion->real_escape_string($_GET['query']);
-
-    $sql = "SELECT id, rif, nombre, apellido FROM propietario WHERE rif LIKE ? OR nombre LIKE ? OR apellido LIKE ? LIMIT 10";
-    $stmt = $conexion->prepare($sql);
     $search = "%$query%";
+
+    $sql = "SELECT id, rif, nombre, apellido FROM propietario WHERE rif LIKE ? OR nombre LIKE ? OR apellido LIKE ? LIMIT 5";
+    $stmt = $conexion->prepare($sql);
     $stmt->bind_param("sss", $search, $search, $search);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $res_prop = $stmt->get_result();
 
-    $propietarios = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $id_propietario = $row['id'];
-
-        // Buscar residencias
-        $sql_res = "SELECT id, nro FROM residencias WHERE id_propietario = ?";
-        $stmt_res = $conexion->prepare($sql_res);
-        $stmt_res->bind_param("i", $id_propietario);
-        $stmt_res->execute();
-        $res_result = $stmt_res->get_result();
-
+    $data = [];
+    while ($p = $res_prop->fetch_assoc()) {
+        $id_p = $p['id'];
+        
+        // 2. Buscar residencias para este propietario
+        $res_sql = "SELECT id, nro FROM residencias WHERE id_propietario = ?";
+        $stmt_r = $conexion->prepare($res_sql);
+        $stmt_r->bind_param("i", $id_p);
+        $stmt_r->execute();
+        $res_r = $stmt_r->get_result();
+        
         $residencias = [];
-        while ($res_row = $res_result->fetch_assoc()) {
-            $id_residencia = $res_row['id'];
-
-            // Buscar facturas pendientes
-            $sql_f = "SELECT id_factura, monto FROM facturas WHERE id_residencia = ? AND status = 'Pendiente'";
-            $stmt_f = $conexion->prepare($sql_f);
-            $stmt_f->bind_param("i", $id_residencia);
-            $stmt_f->execute();
-            $f_res = $stmt_f->get_result();
-
+        while ($r = $res_r->fetch_assoc()) {
+            $id_res = $r['id'];
+            // 3. Buscar facturas pendientes para esa residencia
+            $fac_sql = "SELECT id_factura, monto FROM facturas WHERE id_residencia = $id_res AND status = 'Pendiente'";
+            $res_f = $conexion->query($fac_sql);
+            
             $facturas = [];
-            while ($f_row = $f_res->fetch_assoc()) {
-                $facturas[] = ['id_factura' => $f_row['id_factura'], 'monto' => $f_row['monto']];
-            }
-            $stmt_f->close();
-
-            $residencias[] = ['id' => $id_residencia, 'nro' => $res_row['nro'], 'facturas' => $facturas];
+            while ($f = $res_f->fetch_assoc()) { $facturas[] = $f; }
+            
+            $residencias[] = ['id' => $r['id'], 'nro' => $r['nro'], 'facturas' => $facturas];
         }
-        $stmt_res->close();
-
-        // IMPORTANTE: Se agrega el campo 'id' al JSON final
-        $propietarios[] = [
-            'id' => $row['id'],
-            'rif' => $row['rif'],
-            'nombre' => $row['nombre'],
-            'apellido' => $row['apellido'],
-            'residencias' => $residencias
-        ];
+        $p['residencias'] = $residencias;
+        $data[] = $p;
     }
-    header('Content-Type: application/json');
-    echo json_encode($propietarios);
-    $stmt->close();
+    echo json_encode($data);
 }
+?>
