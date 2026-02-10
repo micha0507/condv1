@@ -62,12 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $allow_process = false;
 
             if ($action === 'add') {
-                if ($exists) {
-                    $message = "<div class='alert alert-warning' style='border:1px solid #ec0a0a;color:#ec0a0a;padding:6px 13px;border-radius:6px;font-weight:600;display:inline-block;'>El RIF ya está registrado.</div>";
-                } else {
-                    $allow_process = true;
-                }
-            } else {
                 if ($exists && $rif !== $original_rif) {
                     $message = "<div class='alert alert-warning' style='border:1px solid #ec0a0a;color:#ec0a0a;padding:6px 13px;border-radius:6px;font-weight:600;display:inline-block;'>El RIF ya está registrado por otro propietario.</div>";
                 } else {
@@ -422,10 +416,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="numero_residencia">Número de Residencia:</label>
                     <input type="text" id="numero_residencia" name="numero_residencia" placeholder="Ej: 101" value="<?php echo isset($numero_residencia) ? htmlspecialchars($numero_residencia) : ''; ?>" required><br>
 
-                    <button type="submit" style="width: 100%;"><?php echo $is_edit ? 'Guardar Cambios' : 'Registrar Propietario'; ?></button><br><br>
+                    <button type="submit" style="width: 100%;"><?php echo $is_edit ? 'Guardar Cambios' : 'Registrar Propietario'; ?></button><br>
 
                     <?php if ($is_edit): ?>
-                        <a href="anadir_miembro.php" style='display:block; text-align:center; margin-top:10px; background:#c0392b; padding: 10px; border-radius: 5px; color: white; text-decoration: none;'>Cancelar</a>
+                        <a href="anadir_miembro.php" style='display:block; text-align:center; margin-top:10px; background:#e74c3c; padding: 10px; border-radius: 5px; color: white; text-decoration: none;'>Cancelar</a>
                     <?php endif; ?>
                 </form>
             </div>
@@ -564,8 +558,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 ?>
-                <button type="button" id="btnShowPrintModal" class="btn-print" style="background-color: #e74c3c; color: white; padding: 10px; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                    <span class="material-symbols-outlined "></span> Guardar PDF / Imprimir
+                <button type="button" id="btnShowPrintModal" class="btn-print" style='display:block; text-align:center; margin-top:10px; background:#e74c3c; padding: 10px; border-radius: 5px; color: white; text-decoration: none;'>
+                    <span class="material-symbols-outlined"></span> Guardar PDF / Imprimir
                 </button>
             </div>
         </div>
@@ -578,7 +572,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p style="color: #666; font-size: 14px;">¿Deseas emitir el PDF del listado del personal?</p>
         <div style="margin-top: 25px; display: flex; justify-content: center; gap: 10px;">
             <button id="confirmarPrint" style="padding: 10px 20px; background-color: #1ecaf5; color: white; border: none; border-radius: 5px; cursor: pointer;">Imprimir</button>
-            <button id="cancelarPrint" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">Cancelar</button>
+            <button id="cancelarPrint" style="padding: 10px 20px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">Cancelar</button>
         </div>
     </div>
 
