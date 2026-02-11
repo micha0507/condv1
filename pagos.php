@@ -21,6 +21,7 @@ if (empty($_SESSION['id_admin'])) {
     <title>Pagos</title>
     <link rel="icon" href="/img/ico_condo.ico">
     <link rel="stylesheet" href="./css/tabla_pagos.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -150,7 +151,33 @@ if (empty($_SESSION['id_admin'])) {
                 </tbody>
             </table>
             <!-- Botón Confirmar habilitado solo si hay pagos pendientes -->
-            <button type="submit" style="margin-top: 20px;" <?php echo isset($has_pending) && $has_pending ? '' : 'disabled'; ?>>Confirmar</button>
+            <button type="submit"
+                id="btnConfirmar"
+                style="margin-top: 20px;"
+                <?php echo isset($has_pending) && $has_pending ? '' : 'disabled'; ?>>
+                Confirmar
+            </button>
+
+            <script>
+                document.getElementById('btnConfirmar').addEventListener('click', function(e) {
+                    e.preventDefault(); // Detiene el envío automático
+
+                    Swal.fire({
+                        title: '¿Confirmar pago?',
+                        text: "Se registrará el pago en el sistema",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, confirmar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.form.submit(); // Envía el formulario si el usuario acepta
+                        }
+                    })
+                });
+            </script>
             <button type="button" id="btnAbrirModalPrint" style="margin-top: 20px; background-color: #e74c3c; color: white;">
                 Guardar PDF / Imprimir
             </button>

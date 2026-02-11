@@ -42,36 +42,29 @@
                 <li class="boton_menu"><img src="./img/icon/factor.png"><a href="./fondos.php">Fondos</a></li>
                 <li class="boton_menu">
                     <img src="./img/avatar.svg" alt="icono cerrar sesión">
-                    <a href="/controlador/controlador_cerrar_sesion.php">Cerrar sesión</a>
+                    <a href="/controlador/controlador_cerrar_sesion.php?rol=Administrador">Cerrar sesión</a>
                 </li>
-                <div class="periodo-actual" style="padding: 10px; text-align: center; background: #f5f5f5;"><br>
-                    <?php
-                    // Ejemplo: mostrar el periodo actual (mes y año) usando date() en lugar de strftime
-                    setlocale(LC_TIME, 'es_ES.UTF-8');
-                    $mes = ucfirst(strftime('%B')); // Para compatibilidad, pero strftime está obsoleto
-                    if (function_exists('date')) {
-                        // Usar date y traducción manual
-                        $meses = [
-                            'January' => 'Enero',
-                            'February' => 'Febrero',
-                            'March' => 'Marzo',
-                            'April' => 'Abril',
-                            'May' => 'Mayo',
-                            'June' => 'Junio',
-                            'July' => 'Julio',
-                            'August' => 'Agosto',
-                            'September' => 'Septiembre',
-                            'October' => 'Octubre',
-                            'November' => 'Noviembre',
-                            'December' => 'Diciembre'
-                        ];
-                        $mes_en = date('F');
-                        $mes = $meses[$mes_en] ?? $mes_en;
-                    }
-                    $anio = date('Y');
-                    echo "Periodo actual: $mes $anio";
-                    ?>
-                </div>
+            <div class="periodo-actual" style="margin-top: 15px; padding: 10px; border-top: 1px solid #ddd; font-size: 0.9em; color: #666;">
+                <?php
+                $meses = [
+                    1 => 'Enero',
+                    2 => 'Febrero',
+                    3 => 'Marzo',
+                    4 => 'Abril',
+                    5 => 'Mayo',
+                    6 => 'Junio',
+                    7 => 'Julio',
+                    8 => 'Agosto',
+                    9 => 'Septiembre',
+                    10 => 'Octubre',
+                    11 => 'Noviembre',
+                    12 => 'Diciembre'
+                ];
+                $mes_actual = $meses[(int)date('m')];
+                $anio_actual = date('Y');
+                echo "<strong>Periodo:</strong> $mes_actual $anio_actual";
+                ?>
+            </div>
             </ul>
 
         </div>
