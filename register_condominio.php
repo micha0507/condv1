@@ -97,43 +97,43 @@
                <div class="i">
                   <i class="fas fa-id-card"></i>
                </div>
-               <div>
-                  <div class="div">
-                     <h5>RIF del Condominio</h5>
-                     <input type="text" class="input" name="rif_admin" id="rif_admin"
-                        value="<?php echo $rif_defecto; ?>"
-                        <?php if ($existe_condominio) echo 'readonly'; ?>>
-                  </div>
-               </div>
 
-               <div class="input-div one <?php if ($existe_condominio) echo 'focus'; ?>">
-                  <div class="i">
-                     <i class="fas fa-building"></i>
-                  </div>
-                  <div class="div">
-                     <h5>Nombre del Condominio</h5>
-                     <input type="text" class="input" name="nombre_condominio" id="nombre_condominio"
-                        value="<?php echo $nombre_condo_defecto; ?>"
-                        <?php if ($existe_condominio) echo 'readonly'; ?>>
-                  </div>
+               <div class="div">
+                  <h5>RIF del Condominio</h5>
+                  <input type="text" class="input" name="rif_admin" id="rif_admin"
+                     value="<?php echo $rif_defecto; ?>"
+                     <?php if ($existe_condominio) echo 'readonly'; ?>>
                </div>
+            </div>
 
-               <div class="input-div one <?php if ($existe_condominio) echo 'focus'; ?>">
-                  <div class="i">
-                     <i class="fas fa-map-marker-alt"></i>
-                  </div>
-                  <div class="div">
-                     <h5>Ubicacion del Condominio</h5>
-                     <input type="text" class="input" name="direccion_condominio" id="direccion_condominio"
-                        value="<?php echo $ubicacion_defecto; ?>"
-                        <?php if ($existe_condominio) echo 'readonly'; ?>>
-                  </div>
+            <div class="input-div one <?php if ($existe_condominio) echo 'focus'; ?>">
+               <div class="i">
+                  <i class="fas fa-building"></i>
                </div>
+               <div class="div">
+                  <h5>Nombre del Condominio</h5>
+                  <input type="text" class="input" name="nombre_condominio" id="nombre_condominio"
+                     value="<?php echo $nombre_condo_defecto; ?>"
+                     <?php if ($existe_condominio) echo 'readonly'; ?>>
+               </div>
+            </div>
 
-               <div class="text-center">
-                  <a class="font-italic isai5" href="login.php">¿Ya tienes una cuenta Creada?</a>
+            <div class="input-div one <?php if ($existe_condominio) echo 'focus'; ?>">
+               <div class="i">
+                  <i class="fas fa-map-marker-alt"></i>
                </div>
-               <input class="btn" type="submit" value="REGISTRAR CONDOMINIO" name="btnregistrar">
+               <div class="div">
+                  <h5>Ubicacion del Condominio</h5>
+                  <input type="text" class="input" name="direccion_condominio" id="direccion_condominio"
+                     value="<?php echo $ubicacion_defecto; ?>"
+                     <?php if ($existe_condominio) echo 'readonly'; ?>>
+               </div>
+            </div>
+
+            <div class="text-center">
+               <a class="font-italic isai5" href="login.php">¿Ya tienes una cuenta Creada?</a>
+            </div>
+            <input class="btn" type="submit" value="REGISTRAR CONDOMINIO" name="btnregistrar">
          </form>
       </div>
    </div>
