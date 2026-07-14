@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-02-2026 a las 20:08:10
+-- Tiempo de generación: 15-07-2026 a las 01:36:29
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -45,21 +45,7 @@ CREATE TABLE `administrador` (
 --
 
 INSERT INTO `administrador` (`id_admin`, `usuario_admin`, `nombre_completo_admin`, `rif_admin`, `email_admin`, `password_admin`, `rol_admin`, `reset_token`, `nombre_condominio`, `direccion_condominio`) VALUES
-(1, 'UrbLaMaroma', 'Luis Guillermo Ferrer Ramirez', 'V314548740', 'lgfr03@gmail.com', '$2y$10$wbd9MI8v6fA24cDr5Zo7sO98FL/1FDhDcFnJjf9J8VA7l6uVaE3gq', 'Administrador', '', 'Urbanizacion La Maroma', ''),
-(27, 'admin', 'admin', 'G200028696', 'admin@gmail.com', '$2y$10$casz1wfAU6kU4fE7oZRIW.SFWpeF9LIePHolfdFDhQGlZweMIc6ye', 'Administrador', '', 'Urbanizacion La Maroma', 'Carretera via el Vigia Km4');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `datos_condominio`
---
-
-CREATE TABLE `datos_condominio` (
-  `id` int(11) NOT NULL,
-  `rif` varchar(15) DEFAULT NULL,
-  `nombre` varchar(200) NOT NULL,
-  `direccion` varchar(500) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(32, 'admin', 'admin', 'J200028696', 'lgfr03@gmail.com', '$2y$10$3swaaay7EI5InHyocZTCC.Q/D2X8cqHGuz5y/K6Z2j5BxCgKCIyma', 'Administrador', '', 'Urbanizacion La Maroma', 'Santa Barbara de Zulia Carretera via el Vigia Km4 ');
 
 -- --------------------------------------------------------
 
@@ -79,9 +65,8 @@ CREATE TABLE `factor` (
 --
 
 INSERT INTO `factor` (`factor`, `monto_mensual`, `fecha`, `id`) VALUES
-(372.11, 100.00, '2026-02-03 00:07:09', 104),
-(382.63, 100.00, '2026-02-07 11:59:23', 106),
-(382.63, 50.00, '2026-02-07 16:15:50', 107);
+(390.29, 100.00, '2026-02-12 12:20:19', 108),
+(725.75, 100.00, '2026-07-14 19:05:43', 109);
 
 -- --------------------------------------------------------
 
@@ -105,9 +90,13 @@ CREATE TABLE `facturas` (
 --
 
 INSERT INTO `facturas` (`id_factura`, `propietario_id`, `fecha_emision`, `fecha_vencimiento`, `periodo`, `monto`, `id_residencia`, `status`) VALUES
-(200, 62, '2026-02-07 20:15:55', '2026-02-22', '02-2026', 50, 76, ''),
-(201, 62, '2026-02-08 16:35:29', '2026-02-23', '02-2026', 50, 76, 'Pendiente'),
-(202, 63, '2026-02-08 16:35:29', '2026-02-23', '02-2026', 50, 77, '');
+(222, 86, '2026-02-12 16:20:38', '2026-02-27', '02-2026', 100, 100, 'Pagado'),
+(223, 87, '2026-02-12 16:20:38', '2026-02-27', '02-2026', 100, 101, ''),
+(224, 88, '2026-02-12 16:22:32', '2026-02-27', '02-2026', 100, 102, ''),
+(225, 86, '2026-07-14 23:05:56', '2026-07-30', '07-2026', 100, 100, ''),
+(226, 87, '2026-07-14 23:05:56', '2026-07-30', '07-2026', 100, 101, ''),
+(227, 88, '2026-07-14 23:05:56', '2026-07-30', '07-2026', 100, 102, ''),
+(228, 89, '2026-07-14 23:05:57', '2026-07-30', '07-2026', 100, 103, 'Pagado');
 
 -- --------------------------------------------------------
 
@@ -122,6 +111,13 @@ CREATE TABLE `gastos_eventuales` (
   `monto` float NOT NULL,
   `fecha` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `gastos_eventuales`
+--
+
+INSERT INTO `gastos_eventuales` (`id_gasto`, `concepto`, `categoria`, `monto`, `fecha`) VALUES
+(29, 'Plan de Alumbramiento', 'Servicios Públicos', 10000.5, '2026-02-12');
 
 -- --------------------------------------------------------
 
@@ -145,19 +141,13 @@ CREATE TABLE `pagos` (
 --
 
 INSERT INTO `pagos` (`id`, `fecha`, `fecha_registro`, `status`, `id_propietario`, `monto`, `referencia`, `factura_afectada`) VALUES
-(82, '2026-02-07', '2026-02-07', 'Validado', 62, 19131.5, '1111111', 200),
-(83, '2026-02-08', '2026-02-08', 'Validado', 63, 19131.5, 'pagado', 202);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `post`
---
-
-CREATE TABLE `post` (
-  `id_post` int(10) NOT NULL,
-  `contenido` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(2, '2026-07-14', '2026-07-14', 'Validado', 89, 72575, 'pago', 228),
+(1821, '2026-02-12', '2026-02-12', 'Validado', 86, 39029, '1111111', 222),
+(1822, '2026-02-12', '2026-02-12', 'Validado', 87, 39029, '01010101', 223),
+(1823, '2026-02-12', '2026-02-12', 'Validado', 88, 39029, 'EFEFE', 224),
+(1824, '2026-07-15', '2026-07-15', 'Validado', 88, 72575, '010203', 227),
+(1825, '2026-07-15', '2026-07-15', 'Validado', 87, 72575, '0102044', 226),
+(1826, '2026-07-15', '2026-07-15', 'Validado', 86, 72575, '2203145', 225);
 
 -- --------------------------------------------------------
 
@@ -182,16 +172,10 @@ CREATE TABLE `propietario` (
 --
 
 INSERT INTO `propietario` (`id`, `rif`, `nombre`, `apellido`, `usuario`, `pass`, `email_propietario`, `rol`, `reset_token`) VALUES
-(62, 'V26718868', 'Michael ', 'Ramirez', 'michael', '$2y$10$NAYl2wTtrWpgQ5qtpVJ1O.7pHKqdYmGibgGjjbnUxcxncTYmCPb7W', 'michael@gmail.com', 'Propietario', '0'),
-(63, 'V31454874', 'Luis', 'Ferrer', 'lgfr_', '$2y$10$093abK7otS6hgxIjbCbSZemLFH8xJDbWRVPtzOYAt8H9/jxoUdZYC', 'lgfr03@gmail.com', 'Propietario', '0'),
-(64, 'V31371985', 'Maryam Victoria', 'Miranda Pacheco', 'maryamvictoria', '$2y$10$OYgM4G.GnXx/U0D/97FVC.pgBnf8B0daTxn5XUMaDoQns0MpV/3Hi', 'maryamvic1205@gmail.com', 'Propietario', '0'),
-(65, 'V31459447', 'Cesar', 'Ferrer', 'ciward', '$2y$10$FkD8EBskxZGJ88fxsEFHse29UOF2EbcfYDOWQy0bvEs1PUTm7Ghxa', 'cesareduardoferrer2003@gmail.com', 'Propietario', '0'),
-(66, 'V6583137', 'Luis Guillermo', 'Ferrer Alaña', 'luchoferrala', '$2y$10$zhaagABkzPkGKq5LVSNB/eycymDe/vzdTEkX.z8i43EQN4BIxF8qG', 'ferreralana@gmail.com', 'Propietario', '0'),
-(67, 'V7902201', 'Nora Margeris', 'Ramirez Peñaloza', 'noramirezp', '$2y$10$7wnpubsu9CNBdjCkK0SOO../nr.RdalMxtD3p4FIoz6cpn0hZpSf6', 'noramirezp18@gmail.com', 'Propietario', '0'),
-(68, 'V28124173', 'Nohelia Victoria', 'Ferrer Ramirez', 'nohevfr', '$2y$10$eeWZQTs5f5uqROSoW1corOj5sv1sKpzDcEPHtmx7c9kYgdCSnxyfi', 'noheliavf@gmail.com', 'Propietario', '0'),
-(69, 'V18963272', 'Yusmary', 'Martinez', 'yusmary02', '$2y$10$uF7t4fyxVAEv2SS8Z.FkDuykN3Ad/rSE5hexfg3h4I2oytptDWKR.', 'yusmarymartinez@gmail.com', 'Propietario', '0'),
-(70, 'G200028696', 'Alcaldia Bolivariana', 'De Colon', 'alcaldiadecolon', '$2y$10$Rm9qq207gg1YRd8iB7JPOusk1kB3O8jS.kk/tLA1D.rWnQIQ2zpx2', 'alcaldia@alcaldiadecolon.gob.ve', 'Propietario', '0'),
-(71, 'G200028699', 'Talento ', 'Humano', 'talentohumano', '$2y$10$ROroVkDeD/MB2Rb9v8YvBOBoTXeN5MGEM3uoRTWXho/dJxKib6jxa', 'talentohumano@alcaldiadecolon.gob.ve', 'Propietario', '0');
+(86, 'V26718375', 'Jose', 'Puerta', 'josepuerta01', '$2y$10$IDLdxZfqI/KJOhkd59lg/.x99GF6qBFcoLkiAH3v3Z7/i3ZZnIPDC', 'josepuerta@gmail.com', 'Propietario', '0'),
+(87, 'V26854344', 'Jesus', 'Monsalve', 'jesus', '$2y$10$IgqeFsTQF9t0qI8LEtxNXOX6FmHA2IBETWkt71bKXVNGZVojtgfbi', 'jesusmosalve@gmail.com', 'Propietario', '0'),
+(88, 'V7777956', 'Luis', 'Reverol', 'luisre', '$2y$10$z9Ys1fqj.4Z6vSqbCaADq.p.glWjY79uK6HdgeZstXk2Z7NPndOdi', 'luisreverol@gmail.com', 'Propietario', '0'),
+(89, 'V31454874', 'Luis', 'Guillermo', 'lgfr_', '$2y$10$K6eeqbpxC8CM9WpRzDK0XuHI4zG5c9tU/qvCaPXbqO2Wa9GeElCfK', 'luisguillermoferrer2003@gmail.com', 'Propietario', '0');
 
 -- --------------------------------------------------------
 
@@ -210,19 +194,10 @@ CREATE TABLE `residencias` (
 --
 
 INSERT INTO `residencias` (`id`, `nro`, `id_propietario`) VALUES
-(76, '1-111', 62),
-(77, '2-25', 63),
-(78, '10-102', 64),
-(79, '2-35', 65),
-(80, '2-381', 66),
-(81, '2-132', 67),
-(82, '12-212', 68),
-(83, '123-22', 69),
-(84, '2-331', 70),
-(85, '100-21', 71),
-(86, '100-21', 72),
-(87, '100-21', 73),
-(88, '100-21', 74);
+(100, '100-21', 86),
+(101, '25-21', 87),
+(102, '2-36', 88),
+(103, '2-35', 89);
 
 --
 -- Índices para tablas volcadas
@@ -262,12 +237,6 @@ ALTER TABLE `pagos`
   ADD KEY `factura_afectada` (`factura_afectada`);
 
 --
--- Indices de la tabla `post`
---
-ALTER TABLE `post`
-  ADD PRIMARY KEY (`id_post`);
-
---
 -- Indices de la tabla `propietario`
 --
 ALTER TABLE `propietario`
@@ -287,49 +256,43 @@ ALTER TABLE `residencias`
 -- AUTO_INCREMENT de la tabla `administrador`
 --
 ALTER TABLE `administrador`
-  MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `factor`
 --
 ALTER TABLE `factor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `id_factura` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
+  MODIFY `id_factura` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
 
 --
 -- AUTO_INCREMENT de la tabla `gastos_eventuales`
 --
 ALTER TABLE `gastos_eventuales`
-  MODIFY `id_gasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_gasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
-
---
--- AUTO_INCREMENT de la tabla `post`
---
-ALTER TABLE `post`
-  MODIFY `id_post` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1827;
 
 --
 -- AUTO_INCREMENT de la tabla `propietario`
 --
 ALTER TABLE `propietario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT de la tabla `residencias`
 --
 ALTER TABLE `residencias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
 
 --
 -- Restricciones para tablas volcadas

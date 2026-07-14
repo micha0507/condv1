@@ -6,6 +6,7 @@
 
         <!-- Formulario para filtrar por mes y año -->
         <form method="GET" action="">
+            <input type="hidden" name="origen" value="pagos">
             <label for="mes">Mes:</label>
             <select name="mes" id="mes" required>
                 <?php
@@ -43,15 +44,24 @@
             <?php
             include 'conexion.php';
 
-            // Obtener mes y año seleccionados o usar el mes y año actual
-            $mes = isset($_GET['mes']) ? $_GET['mes'] : date('m');
-            $anio = isset($_GET['anio']) ? $_GET['anio'] : date('Y');
+            // Obtener mes y año seleccionados o usar el mes y año actual (saneados)
+            $mes = isset($_GET['mes']) ? str_pad(preg_replace('/[^0-9]/', '', $_GET['mes']), 2, '0', STR_PAD_LEFT) : date('m');
+            $anio = isset($_GET['anio']) ? preg_replace('/[^0-9]/', '', $_GET['anio']) : date('Y');
+            if ($mes === '' || (int)$mes < 1 || (int)$mes > 12) {
+                $mes = date('m');
+            }
+            if ($anio === '') {
+                $anio = date('Y');
+            }
 
-            // Consultar los datos de la tabla pagos
+            // Consultar los datos de la tabla pagos (con sentencia preparada)
             $sql = "SELECT id, fecha_registro, monto, referencia 
                     FROM pagos 
-                    WHERE MONTH(fecha_registro) = '$mes' AND YEAR(fecha_registro) = '$anio'";
-            $resultado = $conexion->query($sql);
+                    WHERE MONTH(fecha_registro) = ? AND YEAR(fecha_registro) = ?";
+            $stmt_pagos_mes = $conexion->prepare($sql);
+            $stmt_pagos_mes->bind_param("ss", $mes, $anio);
+            $stmt_pagos_mes->execute();
+            $resultado = $stmt_pagos_mes->get_result();
 
             // Mostrar los datos en una tabla
             echo "<table border='1'>";
@@ -72,7 +82,7 @@
                             <td>{$fila['id']}</td>
                             <td>{$fila['fecha_registro']}</td>
                             <td>" . number_format($fila['monto'], 2) . "</td>
-                            <td>{$fila['referencia']}</td>
+                            <td>" . htmlspecialchars($fila['referencia']) . "</td>
                           </tr>";
                     $total_montos += $fila['monto'];
                 }
@@ -87,11 +97,30 @@
                     </tr>
                   </tfoot>";
             echo "</table>";
+            $stmt_pagos_mes->close();
+
+            // Enlace para el PDF/reporte con el mismo filtro mes/año aplicado
+            $link_pdf_pagos = 'modelo/comprobante_pagosmes.php?tipo=pagos&mes=' . urlencode($mes) . '&anio=' . urlencode($anio);
 
             // Cerrar la conexión
             $conexion->close();
             ?>
         </div>
+
+        <button type="button" id="btnShowPrintModalPagos" data-pdf-link="<?php echo htmlspecialchars($link_pdf_pagos); ?>" style="display:block; text-align:center; margin-top:15px; background:#e74c3c; padding:10px; border-radius:5px; color:white; text-decoration:none; border:none; width:100%; cursor:pointer; font-size:14px;">
+            Guardar PDF / Imprimir
+        </button>
+    </div>
+</div>
+
+<!-- Modal de confirmación de PDF (Pagos del Mes) -->
+<div id="modalFondoPrintPagos" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1001;"></div>
+<div id="modalPrintPagos" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:25px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.3); z-index:1002; text-align:center; width:350px;">
+    <h2 style="margin:0 0 10px 0; color:#4CAF50;">Listado Generado Exitosamente</h2>
+    <p style="color:#666; font-size:14px;">¿Deseas emitir el PDF del listado de pagos del mes?</p>
+    <div style="margin-top:25px; display:flex; justify-content:center; gap:10px;">
+        <button id="confirmarPrintPagos" style="padding:10px 20px; background-color:#1ecaf5; color:white; border:none; border-radius:5px; cursor:pointer;">Imprimir</button>
+        <button id="cancelarPrintPagos" style="padding:10px 20px; background-color:#e74c3c; color:white; border:none; border-radius:5px; cursor:pointer;">Cancelar</button>
     </div>
 </div>
 
@@ -164,11 +193,47 @@ function cerrarModalPagos() {
     document.getElementById('modalPagosMes').style.display = 'none';
 }
 
-// Mantener el modal abierto si hay parámetros GET en la URL
-window.onload = function() {
+// Mantener el modal abierto si se filtró desde ESTE formulario (Pagos)
+document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('mes') || urlParams.has('anio')) {
+    if (urlParams.get('origen') === 'pagos') {
         abrirModalPagos();
     }
-};
+});
+
+// --- Modal de confirmación para emitir el PDF de Pagos del Mes ---
+document.addEventListener('DOMContentLoaded', function() {
+    var btnShowPrint = document.getElementById('btnShowPrintModalPagos');
+    var modalFondoPrint = document.getElementById('modalFondoPrintPagos');
+    var modalPrint = document.getElementById('modalPrintPagos');
+    var btnConfirmar = document.getElementById('confirmarPrintPagos');
+    var btnCancelar = document.getElementById('cancelarPrintPagos');
+
+    if (!btnShowPrint || !modalFondoPrint || !modalPrint) {
+        return;
+    }
+
+    function abrirModalPrint() {
+        modalFondoPrint.style.display = 'block';
+        modalPrint.style.display = 'block';
+    }
+
+    function cerrarModalPrint() {
+        modalFondoPrint.style.display = 'none';
+        modalPrint.style.display = 'none';
+    }
+
+    btnShowPrint.addEventListener('click', abrirModalPrint);
+    modalFondoPrint.addEventListener('click', cerrarModalPrint);
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', cerrarModalPrint);
+    }
+    if (btnConfirmar) {
+        btnConfirmar.addEventListener('click', function() {
+            var link = btnShowPrint.getAttribute('data-pdf-link');
+            window.open(link, '_blank');
+            cerrarModalPrint();
+        });
+    }
+});
 </script>

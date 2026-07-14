@@ -205,7 +205,7 @@ $monto_bs_final = number_format($tasa * $mensualidad_usd, 2, '.', ''); // Operac
                     facturas.forEach(f => {
                         const opt = document.createElement('option');
                         opt.value = f.id_factura;
-                        opt.text = `ID: ${f.id_factura} (Deuda: ${f.monto} Bs)`;
+                        opt.text = `ID: ${f.id_factura} (Deuda: ${f.monto} $)`;
                         facSelect.appendChild(opt);
                     });
                 }

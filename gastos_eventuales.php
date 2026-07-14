@@ -36,7 +36,6 @@ if (empty($_SESSION['id_admin'])) {
                 <option value="Servicios Públicos">Servicios Públicos</option>
                 <option value="Reparaciones">Reparaciones</option>
                 <option value="Limpieza">Limpieza</option>
-                <option value="Nomina">Nomina</option>
                 <option value="Otros">Otros</option>
             </select>
             

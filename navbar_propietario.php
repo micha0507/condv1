@@ -15,7 +15,7 @@
             </a>
         </div>
         <!-- BOTON -->
-        <a href="../modelo/pagos_propietario.php" class="carga">
+        <a href="../pagos_propietario.php" class="carga">
 
             <span class="material-symbols-outlined">
                 add
@@ -30,7 +30,7 @@
                 </li>
                 <li class="boton_menu">
                     <img src="./img/icon/factor.png">
-                    <a href="/modelo/pagos_propietario.php">Ver Pagos</a>
+                    <a href="../pagos_propietario.php">Ver Pagos</a>
                 </li>
                 <li class="boton_menu">
                     <img src="./img/avatar.svg" alt="Cerrar sesión">

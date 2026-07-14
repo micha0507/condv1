@@ -53,25 +53,68 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $original_rif = null;
             }
 
-            $sql_check = "SELECT rif FROM propietario WHERE rif = ?";
+            $numero_residencia = trim($_POST['numero_residencia'] ?? '');
+            $allow_process = true;
+            $id_propietario_edit = null;
+
+            // Verificar si el RIF ingresado ya pertenece a algún propietario
+            $sql_check = "SELECT id FROM propietario WHERE rif = ?";
             $stmt_check = $conexion->prepare($sql_check);
             $stmt_check->bind_param("s", $rif);
             $stmt_check->execute();
-            $result_check = $stmt_check->get_result();
-            $exists = $result_check && $result_check->num_rows > 0;
-            $allow_process = false;
+            $owner_with_rif = $stmt_check->get_result()->fetch_assoc();
+            $stmt_check->close();
 
             if ($action === 'add') {
-                if ($exists && $rif !== $original_rif) {
+                if ($owner_with_rif) {
+                    $allow_process = false;
                     $message = "<div class='alert alert-warning' style='border:1px solid #ec0a0a;color:#ec0a0a;padding:6px 13px;border-radius:6px;font-weight:600;display:inline-block;'>El RIF ya está registrado por otro propietario.</div>";
+                }
+            } else {
+                // EDICIÓN: primero localizamos el id del propietario que se está editando
+                $stmt_orig = $conexion->prepare("SELECT id FROM propietario WHERE rif = ?");
+                $stmt_orig->bind_param("s", $original_rif);
+                $stmt_orig->execute();
+                $orig_row = $stmt_orig->get_result()->fetch_assoc();
+                $stmt_orig->close();
+
+                if (!$orig_row) {
+                    $allow_process = false;
+                    $message = "<div class='alert alert-danger' style='border:1px solid #ec0a0a;color:#ec0a0a;padding:6px 13px;border-radius:6px;font-weight:600;display:inline-block;'>No se encontró el propietario que se intenta editar.</div>";
                 } else {
-                    $allow_process = true;
+                    $id_propietario_edit = (int)$orig_row['id'];
+                    // El RIF nuevo solo es un problema si pertenece a OTRO propietario distinto al que editamos
+                    if ($owner_with_rif && (int)$owner_with_rif['id'] !== $id_propietario_edit) {
+                        $allow_process = false;
+                        $message = "<div class='alert alert-warning' style='border:1px solid #ec0a0a;color:#ec0a0a;padding:6px 13px;border-radius:6px;font-weight:600;display:inline-block;'>El RIF ya está registrado por otro propietario.</div>";
+                    }
+                }
+            }
+
+            // Verificar que el N° de residencia no esté ya asignado a otro propietario distinto
+            if ($allow_process && $numero_residencia === '') {
+                $allow_process = false;
+                $message = "<div class='alert alert-danger' style='border:1px solid #ec0a0a;color:#ec0a0a;padding:6px 13px;border-radius:6px;font-weight:600;display:inline-block;'>Debe indicar un número de residencia.</div>";
+            } elseif ($allow_process) {
+                $sql_res_check = "SELECT id_propietario FROM residencias WHERE nro = ?";
+                $stmt_res_check = $conexion->prepare($sql_res_check);
+                $stmt_res_check->bind_param("s", $numero_residencia);
+                $stmt_res_check->execute();
+                $res_owner_row = $stmt_res_check->get_result()->fetch_assoc();
+                $stmt_res_check->close();
+
+                if ($res_owner_row) {
+                    $owner_of_residence = (int)$res_owner_row['id_propietario'];
+                    $is_same_owner = ($action === 'edit' && $id_propietario_edit !== null && $owner_of_residence === $id_propietario_edit);
+                    if (!$is_same_owner) {
+                        $allow_process = false;
+                        $message = "<div class='alert alert-warning' style='border:1px solid #ec0a0a;color:#ec0a0a;padding:6px 13px;border-radius:6px;font-weight:600;display:inline-block;'>El número de residencia ya está asignado a otro propietario.</div>";
+                    }
                 }
             }
 
             if ($allow_process) {
                 if ($action === 'add') {
-                    $numero_residencia = $_POST['numero_residencia'] ?? '';
                     $pass_hashed = password_hash($pass, PASSWORD_DEFAULT);
                     $conexion->begin_transaction();
                     try {
@@ -95,31 +138,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $message = "<div class='alert alert-danger'>Error al registrar: " . htmlspecialchars($e->getMessage()) . "</div>";
                     }
                 } else {
-                    // PROCESO DE EDICIÓN (CORREGIDO)
-                    $numero_residencia = $_POST['numero_residencia'] ?? '';
+                    // PROCESO DE EDICIÓN
                     $conexion->begin_transaction();
                     try {
-                        // 1. Actualizar Propietario
+                        // 1. Actualizar Propietario (usamos original_rif para localizar el registro)
                         if ($pass === '') {
-                            $sql_up = "UPDATE propietario SET rif = ?, nombre = ?, apellido = ?, usuario = ?, email_propietario = ? WHERE rif = ?";
+                            $sql_up = "UPDATE propietario SET rif = ?, nombre = ?, apellido = ?, usuario = ?, email_propietario = ? WHERE id = ?";
                             $stmt_up = $conexion->prepare($sql_up);
-                            $stmt_up->bind_param("ssssss", $rif, $nombre, $apellido, $usuario, $email_propietario, $original_rif);
+                            $stmt_up->bind_param("sssssi", $rif, $nombre, $apellido, $usuario, $email_propietario, $id_propietario_edit);
                         } else {
                             $pass_hashed = password_hash($pass, PASSWORD_DEFAULT);
-                            $sql_up = "UPDATE propietario SET rif = ?, nombre = ?, apellido = ?, usuario = ?, pass = ?, email_propietario = ? WHERE rif = ?";
+                            $sql_up = "UPDATE propietario SET rif = ?, nombre = ?, apellido = ?, usuario = ?, pass = ?, email_propietario = ? WHERE id = ?";
                             $stmt_up = $conexion->prepare($sql_up);
-                            $stmt_up->bind_param("sssssss", $rif, $nombre, $apellido, $usuario, $pass_hashed, $email_propietario, $original_rif);
+                            $stmt_up->bind_param("ssssssi", $rif, $nombre, $apellido, $usuario, $pass_hashed, $email_propietario, $id_propietario_edit);
                         }
                         $stmt_up->execute();
 
-                        // 2. Obtener ID del propietario
-                        $res_id = $conexion->prepare("SELECT id FROM propietario WHERE rif = ?");
-                        $res_id->bind_param("s", $rif);
-                        $res_id->execute();
-                        $id_propietario_edit = $res_id->get_result()->fetch_assoc()['id'];
-
-                        // 3. ACTUALIZACIÓN DE RESIDENCIA (CORRECCIÓN DE DUPLICIDAD)
-                        // Verificamos si ya existe una residencia para este ID de propietario
+                        // 2. Actualizar/crear residencia para este propietario
+                        // (la unicidad del número de residencia ya fue validada arriba)
                         $check_res = $conexion->prepare("SELECT id FROM residencias WHERE id_propietario = ?");
                         $check_res->bind_param("i", $id_propietario_edit);
                         $check_res->execute();
@@ -149,7 +185,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
             }
-            $stmt_check->close();
         }
     }
 
@@ -407,8 +442,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="usuario">Usuario:</label>
                     <input type="text" id="usuario" name="usuario" placeholder="Ej: juanperez123" value="<?php echo htmlspecialchars($usuario); ?>" required><br>
 
-                    <label for="pass">Contraseña:</label>
-                    <input type="password" id="pass" name="pass" placeholder="Entre 8 y 12 caracteres" value="<?php echo htmlspecialchars($pass); ?>"><br>
+                    <label for="pass">Contraseña:<?php if ($is_edit): ?> <small style="font-weight:normal;color:#888;">(dejar en blanco para no cambiarla)</small><?php endif; ?></label>
+                    <input type="password" id="pass" name="pass" placeholder="<?php echo $is_edit ? 'Dejar en blanco para mantener la actual' : 'Entre 8 y 12 caracteres'; ?>" value="<?php echo htmlspecialchars($pass); ?>" autocomplete="new-password"><br>
 
                     <label for="email_propietario">Email:</label>
                     <input type="email" id="email_propietario" name="email_propietario" placeholder="Ej: juan@email.com" value="<?php echo htmlspecialchars($email_propietario); ?>" required><br>
