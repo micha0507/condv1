@@ -7,6 +7,10 @@
         "/^php -l carga_masiva\\.php$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^php -l propietario\\.php$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

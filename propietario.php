@@ -22,7 +22,6 @@ $msg = '';
 $err = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cargar_pago') {
     $factura_id = isset($_POST['factura_id']) ? intval($_POST['factura_id']) : 0;
-    $residencia_id = isset($_POST['residencia_id']) ? intval($_POST['residencia_id']) : 0;
     $monto = isset($_POST['monto']) ? floatval($_POST['monto']) : 0;
     $fecha_pago = !empty($_POST['fecha_pago']) ? $_POST['fecha_pago'] : date('Y-m-d');
     $referencia = isset($_POST['referencia']) ? trim($_POST['referencia']) : '';
@@ -36,27 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $factRow = $stmtF->get_result()->fetch_assoc();
 
         if ($factRow) {
-            $nro_res = '';
-            if ($residencia_id > 0) {
-                $stmtR = $conexion->prepare('SELECT nro FROM residencias WHERE id = ? AND id_propietario = ? LIMIT 1');
-                $stmtR->bind_param('ii', $residencia_id, $id_propietario);
-                $stmtR->execute();
-                $resR = $stmtR->get_result()->fetch_assoc();
-                if ($resR) $nro_res = $resR['nro'];
-            }
-
-            $stmtP = $conexion->prepare('INSERT INTO pagos (fecha, fecha_registro, status, id, id_propietario, monto, referencia, factura_afectada) VALUES (?, NOW(), "pendiente", ?, ?, ?, ?, ?)');
-            $stmtP->bind_param('ssidss', $fecha_pago, $nro_res, $id_propietario, $monto, $referencia, $factura_id);
+            $stmtP = $conexion->prepare('INSERT INTO pagos (fecha, fecha_registro, status, id_propietario, monto, referencia, factura_afectada) VALUES (?, NOW(), "Pendiente", ?, ?, ?, ?)');
+            $stmtP->bind_param('sidsi', $fecha_pago, $id_propietario, $monto, $referencia, $factura_id);
             if ($stmtP->execute()) {
-                if ($monto >= floatval($factRow['monto'])) {
-                    $stmtU = $conexion->prepare('UPDATE facturas SET status = "pagado" WHERE id_factura = ?');
-                    $stmtU->bind_param('i', $factura_id);
-                    $stmtU->execute();
-                }
                 $msg = '¡Pago registrado exitosamente! En espera de validación.';
             } else {
                 $err = 'Error al registrar pago.';
             }
+        } else {
+            $err = 'La factura seleccionada no es válida.';
         }
     }
 }
@@ -76,8 +63,6 @@ $stmtHist = $conexion->prepare("SELECT * FROM pagos WHERE id_propietario = ? AND
 $stmtHist->bind_param("i", $id_propietario);
 $stmtHist->execute();
 $historico_pagos = $stmtHist->get_result();
-
-$residencias = $conexion->query("SELECT id, nro FROM residencias WHERE id_propietario = $id_propietario");
 
 $resFactor = $conexion->query("SELECT factor, fecha FROM factor ORDER BY id DESC LIMIT 1");
 $factor_data = $resFactor->fetch_assoc();
@@ -340,18 +325,6 @@ $factor_data = $resFactor->fetch_assoc();
                             <label>Monto a Pagar (Bs)</label>
                             <input type="text" id="monto_formateado" class="form-control" placeholder="0,00" readonly>
                             <input type="hidden" name="monto" id="monto_real">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Inmueble / Residencia</label>
-                            <select name="residencia_id" class="form-control">
-                                <option value="0">-- No especificar --</option>
-                                <?php
-                                $residencias->data_seek(0);
-                                while ($r = $residencias->fetch_assoc()): ?>
-                                    <option value="<?= $r['id'] ?>">Inmueble <?= $r['nro'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
                         </div>
 
                         <div class="form-group">
