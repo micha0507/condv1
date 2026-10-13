@@ -1,5 +1,6 @@
 <?php
 $token_valid = false;
+$password_updated = false;
 $message_html = '';
 $token = '';
 
@@ -102,8 +103,8 @@ if (!empty($token)) {
             if ($update) {
                $update->bind_param("si", $hashed_password, $user_id);
                if ($update->execute()) {
-                  header('Location: ../login.php');
-                  exit;
+                  $password_updated = true;
+                  $token_valid = false;
                } else {
                   $message_html = "<div class='alert alert-danger'>Error al actualizar la contraseña.</div>";
                }
@@ -161,6 +162,39 @@ $conexion->close();
    <link rel="stylesheet" type="text/css" href="../css/style.css">
    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+   <style>
+      .password-success-overlay {
+         position: fixed;
+         inset: 0;
+         z-index: 1050;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         padding: 20px;
+         background: rgba(0, 0, 0, 0.55);
+      }
+
+      .password-success-modal {
+         width: 100%;
+         max-width: 440px;
+         padding: 28px;
+         border-radius: 10px;
+         background: #fff;
+         box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+         color: #155724;
+         text-align: center;
+      }
+
+      .password-success-modal h2 {
+         margin: 0 0 12px;
+         color: #218838;
+         font-size: 1.5rem;
+      }
+
+      .password-success-modal p {
+         margin: 0;
+      }
+   </style>
    <title>Restablecer Contraseña</title>
    <link rel="icon" href="/img/ico_condo.ico">
 </head>
@@ -217,6 +251,20 @@ $conexion->close();
    <script src="../js/jquery.min.js"></script>
    <script src="../js/bootstrap.js"></script>
    <script src="../js/bootstrap.bundle.js"></script>
+
+   <?php if ($password_updated): ?>
+      <div class="password-success-overlay">
+         <section class="password-success-modal" role="dialog" aria-modal="true" aria-labelledby="password-success-title">
+            <h2 id="password-success-title">¡Contraseña actualizada con éxito!</h2>
+            <p>En 5 segundos serás redirigido al inicio de sesión.</p>
+         </section>
+      </div>
+      <script>
+         window.setTimeout(function() {
+            window.location.href = '../login.php';
+         }, 5000);
+      </script>
+   <?php endif; ?>
 
    <script>
       document.addEventListener('DOMContentLoaded', function() {
