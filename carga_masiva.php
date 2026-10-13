@@ -25,6 +25,10 @@ $monto_bs_final = number_format($tasa * $mensualidad_usd, 2, '.', ''); // Operac
     <link rel="stylesheet" href="./css/tabla_pagos.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+        .principal table {
+            overflow: visible;
+        }
+
         /* Contenedor relativo para el input */
         /* Esto asegura que la celda no corte el contenido */
         td {

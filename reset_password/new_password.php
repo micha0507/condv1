@@ -102,8 +102,8 @@ if (!empty($token)) {
             if ($update) {
                $update->bind_param("si", $hashed_password, $user_id);
                if ($update->execute()) {
-                  $message_html = "<div class='alert alert-success' style='background:linear-gradient(90deg,#e6ffed,#d4f7e2);border:1px solid #2ecc71;color:#155724;padding:12px 16px;border-radius:6px;box-shadow:0 2px 6px rgba(46,204,113,0.15);font-weight:600;display:inline-block;'>Contraseña restablecida con éxito. <a href='../login.php'>Iniciar sesión</a></div>";
-                  $token_valid = false; // evitar reuso del formulario
+                  header('Location: ../login.php');
+                  exit;
                } else {
                   $message_html = "<div class='alert alert-danger'>Error al actualizar la contraseña.</div>";
                }

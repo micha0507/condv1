@@ -1,0 +1,12 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^php -l reset_password\\\\new_password\\.php$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^php -l carga_masiva\\.php$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
